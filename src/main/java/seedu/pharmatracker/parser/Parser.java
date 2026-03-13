@@ -45,6 +45,7 @@ public class Parser {
 
         case "exit":
             System.out.println("Exit command triggered.");
+            System.exit(0);
             break;
 
         default:
