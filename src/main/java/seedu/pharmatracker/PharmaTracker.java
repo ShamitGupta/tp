@@ -18,15 +18,14 @@ public class PharmaTracker {
     public PharmaTracker() {
         ui = new Ui();
         inventory = new Inventory();
-        // parser = new Parser(inventory);
     }
 
     public void run() {
         assert ui != null : "UI should not be null";
-        // assert parser != null : "Parser should not be null";
         assert inventory != null : "Inventory should not be null";
         logger.log(Level.INFO, "PharmaTracker starting up");
         ui.printWelcomeMessage();
+
         while (true) {
             String fullCommand = ui.readCommand();
             Command c = parse(fullCommand);

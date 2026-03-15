@@ -6,7 +6,6 @@ import seedu.pharmatracker.data.Medication;
 public class AddCommand extends Command {
 
     public static final String COMMAND_WORD = "add";
-    // public final String description;
 
     private final String name;
     private final String dosage;
@@ -18,7 +17,6 @@ public class AddCommand extends Command {
     // /n NAME /d DOSAGE /q QUANTITY /e EXPIRY /t TAG
 
     public AddCommand(String name, String dosage, int quantity, String expiryDate, String tag) {
-        // this.description = description;
         this.name = name;
         this.dosage = dosage;
         this.quantity = quantity;

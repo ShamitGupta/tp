@@ -3,8 +3,6 @@ package seedu.pharmatracker.parser;
 import seedu.pharmatracker.command.AddCommand;
 import seedu.pharmatracker.command.Command;
 import seedu.pharmatracker.command.ListCommand;
-import seedu.pharmatracker.data.Inventory;
-import seedu.pharmatracker.data.Medication;
 
 public class Parser {
 
@@ -29,12 +27,15 @@ public class Parser {
     public static String extractExpiryDate(String description) {
         int expiryIndex = description.indexOf("/e");
         int tagIndex = description.indexOf("/t");
+        if (tagIndex == -1) {
+            return description.substring(expiryIndex + 2).trim();
+        }
         return description.substring(expiryIndex + 2, tagIndex).trim();
     }
 
     public static String extractTag(String description) {
         int tagIndex = description.indexOf("/t");
-        return description.substring(tagIndex + 2).trim();
+        return (tagIndex == -1) ? "" : description.substring(tagIndex + 2).trim();
     }
 
     public static Command parse(String userInput) {
