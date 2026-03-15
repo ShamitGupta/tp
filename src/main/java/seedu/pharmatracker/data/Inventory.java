@@ -8,9 +8,16 @@ import java.util.Comparator;
 
 public class Inventory {
     private ArrayList<Medication> medications;
+    private int medicationCount;
 
     public Inventory() {
         this.medications = new ArrayList<>();
+        this.medicationCount = 0;
+    }
+
+    public void addMedication(Medication medication) {
+        medications.add(medication);
+        medicationCount++;
     }
 
     public ArrayList<Medication> getMedications() {

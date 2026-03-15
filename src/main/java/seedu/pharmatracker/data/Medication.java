@@ -41,6 +41,15 @@ public class Medication {
 
     @Override
     public String toString() {
-        return null;
+        String s = "Name: " + name +
+                   " | Dosage: " + dosage +
+                   " | Qty: " + quantity +
+                   " | Exp: " + expiryDate;
+
+        if (!tag.isEmpty()) {
+            s += " | Tag: " + tag;
+        }
+
+        return s;
     }
 }
