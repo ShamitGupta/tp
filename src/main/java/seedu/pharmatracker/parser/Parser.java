@@ -5,14 +5,41 @@ import seedu.pharmatracker.command.Command;
 import seedu.pharmatracker.command.ListCommand;
 import seedu.pharmatracker.command.SortCommand;
 import seedu.pharmatracker.command.FindCommand;
+import seedu.pharmatracker.command.ViewCommand;
 import seedu.pharmatracker.data.Inventory;
 
 public class Parser {
 
     private static Inventory inventory;
 
+    private static final String[] ALL_FLAGS = {
+        "/n", "/d", "/q", "/e", "/t", "/df", "/mfr",
+        "/dir", "/freq", "/route", "/max", "/warn"
+    };
+
     public Parser(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    private static int findNextFlagIndex(String description, int afterIndex) {
+        int earliest = description.length();
+        for (String flag : ALL_FLAGS) {
+            int idx = description.indexOf(flag, afterIndex);
+            if (idx != -1 && idx < earliest) {
+                earliest = idx;
+            }
+        }
+        return earliest;
+    }
+
+    private static String extractFlag(String description, String flag) {
+        int flagIndex = description.indexOf(flag);
+        if (flagIndex == -1) {
+            return "";
+        }
+        int valueStart = flagIndex + flag.length();
+        int valueEnd = findNextFlagIndex(description, valueStart);
+        return description.substring(valueStart, valueEnd).trim();
     }
 
     public static String extractName(String description) {
@@ -47,6 +74,25 @@ public class Parser {
         return (tagIndex == -1) ? "" : description.substring(tagIndex + 2).trim();
     }
 
+    private static java.util.ArrayList<String> extractWarnings(String description) {
+        java.util.ArrayList<String> warnings = new java.util.ArrayList<>();
+        int searchFrom = 0;
+        while (true) {
+            int idx = description.indexOf("/warn", searchFrom);
+            if (idx == -1) {
+                break;
+            }
+            int valueStart = idx + "/warn".length();
+            int valueEnd = findNextFlagIndex(description, valueStart);
+            String value = description.substring(valueStart, valueEnd).trim();
+            if (!value.isEmpty()) {
+                warnings.add(value);
+            }
+            searchFrom = valueStart;
+        }
+        return warnings;
+    }
+
     public static Command parse(String userInput) {
         String[] inputParts = userInput.trim().split("\\s+", 2);
         String commandWord = inputParts[0].toLowerCase();
@@ -60,7 +106,16 @@ public class Parser {
             int quantity = extractQuantity(description);
             String expiryDate = extractExpiryDate(description);
             String tag = extractTag(description);
-            return new AddCommand(name, dosage, quantity, expiryDate, tag);
+            String dosageForm = extractFlag(description, "/df");
+            String manufacturer = extractFlag(description, "/mfr");
+            String directions = extractFlag(description, "/dir");
+            String frequency = extractFlag(description, "/freq");
+            String route = extractFlag(description, "/route");
+            String maxDailyDose = extractFlag(description, "/max");
+            java.util.ArrayList<String> warnings = extractWarnings(description);
+            return new AddCommand(name, dosage, quantity, expiryDate, tag,
+                    dosageForm, manufacturer, directions, frequency, route,
+                    maxDailyDose, warnings);
 
         case "delete":
             System.out.println("Delete command triggered.");
@@ -84,7 +139,17 @@ public class Parser {
 
         case "view":
             System.out.println("View command triggered.");
-            break;
+            if (description.isEmpty()) {
+                System.out.println("Please provide an index to view.");
+                break;
+            }
+            try {
+                int index = Integer.parseInt(description.trim());
+                return new ViewCommand(index);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid index. Please enter a valid number.");
+                break;
+            }
 
         case "sort":
             System.out.println("Sort command triggered.");
