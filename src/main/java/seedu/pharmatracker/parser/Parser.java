@@ -12,9 +12,7 @@ public class Parser {
 
     private static Inventory inventory;
 
-    private static final String[] ALL_FLAGS = {
-            "/n", "/d", "/q", "/e", "/t", "/df", "/mfr", "/dir", "/freq", "/route", "/max", "/warn"
-    };
+    private static final String[] ALL_FLAGS = {"/n", "/d", "/q", "/e", "/t", "/df", "/mfr", "/dir", "/freq", "/route", "/max", "/warn"};
 
     public Parser(Inventory inventory) {
         this.inventory = inventory;
