@@ -43,20 +43,4 @@ public class Inventory {
         }
     }
 
-    public void sortByExpiryDate() {
-        if (medications.isEmpty()) {
-            System.out.println("Inventory is empty.");
-            return;
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        medications.sort(Comparator.comparing(med -> {
-            try {
-                return LocalDate.parse(med.getExpiryDate(), formatter);
-            } catch (DateTimeParseException e) {
-                return LocalDate.MAX;
-            }
-        }));
-        System.out.println("Medications sorted by expiry date:");
-        listMedications();
-    }
 }
