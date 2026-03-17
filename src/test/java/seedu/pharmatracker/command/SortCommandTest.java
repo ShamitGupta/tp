@@ -1,4 +1,145 @@
 package seedu.pharmatracker.command;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import seedu.pharmatracker.data.Inventory;
+import seedu.pharmatracker.data.Medication;
+
+/**
+ * Test cases for the SortCommand class.
+ * Tests the sorting functionality by expiry date and handling of edge cases.
+ */
 public class SortCommandTest {
+
+    private SortCommand sortCommand;
+    private Inventory inventory;
+    private ByteArrayOutputStream outputStream;
+    private PrintStream originalOut;
+
+    /**
+     * Sets up test fixtures before each test method.
+     * Initializes the SortCommand, inventory, and captures system output.
+     */
+    @Before
+    public void setUp() {
+        sortCommand = new SortCommand();
+        inventory = new Inventory();
+        outputStream = new ByteArrayOutputStream();
+        originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+    }
+
+    /**
+     * Test SortCommand with an empty inventory.
+     * Expected: Displays message indicating inventory is empty.
+     */
+    @Test
+    public void execute_emptyInventory_displaysEmptyMessage() {
+        sortCommand.execute(inventory);
+        String output = outputStream.toString();
+        assert output.contains("Inventory is empty.") : "Output should contain empty inventory message";
+    }
+
+    /**
+     * Test SortCommand with a single medication.
+     * Expected: Displays the single medication with index 1.
+     */
+    @Test
+    public void execute_singleMedication_displaysSingleItem() {
+        Medication medication = new Medication("Aspirin", "2026-12-31", 10);
+        inventory.addMedication(medication);
+
+        sortCommand.execute(inventory);
+        String output = outputStream.toString();
+
+        assert output.contains("Medications sorted by expiry date:") : "Output should contain sort header";
+        assert output.contains("1. ") : "Output should contain medication at index 1";
+    }
+
+    /**
+     * Test SortCommand with multiple medications.
+     * Expected: Medications are sorted in ascending order by expiry date.
+     */
+    @Test
+    public void execute_multipleMedications_sortsByExpiryDateAscending() {
+        // Add medications with different expiry dates in random order
+        Medication medication1 = new Medication("Aspirin", "2026-03-20", 10);
+        Medication medication2 = new Medication("Paracetamol", "2026-01-15", 20);
+        Medication medication3 = new Medication("Ibuprofen", "2026-06-10", 15);
+
+        inventory.addMedication(medication1);
+        inventory.addMedication(medication2);
+        inventory.addMedication(medication3);
+
+        ArrayList<Medication> medicationsBeforeSort = inventory.getMedications();
+        assert medicationsBeforeSort.size() == 3 : "Inventory should contain 3 medications";
+
+        sortCommand.execute(inventory);
+
+        ArrayList<Medication> medicationsAfterSort = inventory.getMedications();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date1 = LocalDate.parse(medicationsAfterSort.get(0).getExpiryDate(), formatter);
+        LocalDate date2 = LocalDate.parse(medicationsAfterSort.get(1).getExpiryDate(), formatter);
+        LocalDate date3 = LocalDate.parse(medicationsAfterSort.get(2).getExpiryDate(), formatter);
+
+        assert date1.compareTo(date2) <= 0 : "First medication should expire before or same as second";
+        assert date2.compareTo(date3) <= 0 : "Second medication should expire before or same as third";
+    }
+
+    /**
+     * Test SortCommand with medications having invalid expiry dates.
+     * Expected: Medications with invalid dates are treated as having maximum expiry date
+     * and appear at the end of the sorted list.
+     */
+    @Test
+    public void execute_invalidExpiryDates_treatsAsMaximumDate() {
+        Medication validMedication = new Medication("ValidMed", "2026-03-20", 10);
+        Medication invalidMedication = new Medication("InvalidMed", "invalid-date", 5);
+
+        inventory.addMedication(invalidMedication);
+        inventory.addMedication(validMedication);
+
+        sortCommand.execute(inventory);
+
+        ArrayList<Medication> medicationsAfterSort = inventory.getMedications();
+        assert medicationsAfterSort.size() == 2 : "Inventory should still contain 2 medications";
+
+        // The valid medication should be first (earlier date)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            LocalDate firstDate = LocalDate.parse(
+                    medicationsAfterSort.get(0).getExpiryDate(), formatter);
+            assert firstDate.equals(LocalDate.parse("2026-03-20", formatter))
+                    : "First medication should be the valid one";
+        } catch (Exception e) {
+            assert false : "First medication should have valid expiry date";
+        }
+    }
+
+    /**
+     * Test SortCommand displays sorted output correctly.
+     * Expected: Output contains sort header and displays medications with indices.
+     */
+    @Test
+    public void execute_multipleMedications_displaysCorrectFormat() {
+        Medication medication1 = new Medication("Aspirin", "2026-03-20", 10);
+        Medication medication2 = new Medication("Paracetamol", "2026-01-15", 20);
+
+        inventory.addMedication(medication1);
+        inventory.addMedication(medication2);
+
+        sortCommand.execute(inventory);
+        String output = outputStream.toString();
+
+        assert output.contains("Medications sorted by expiry date:") : "Output should contain header";
+        assert output.contains("1. ") : "Output should display first medication";
+        assert output.contains("2. ") : "Output should display second medication";
+    }
 }

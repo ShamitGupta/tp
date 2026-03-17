@@ -9,28 +9,45 @@ import java.util.Comparator;
 import seedu.pharmatracker.data.Inventory;
 import seedu.pharmatracker.data.Medication;
 
+/**
+ * Sorts medications in the inventory by expiry date.
+ * Medications with invalid expiry dates are treated as having the latest possible expiry date.
+ */
 public class SortCommand extends Command {
 
+    /**
+     * Executes the sort command by sorting all medications in the inventory by expiry date
+     * in ascending order and displaying the sorted list to the user.
+     * If the inventory is empty, displays a message indicating the inventory is empty.
+     *
+     * @param inventory The inventory containing medications to be sorted.
+     */
     @Override
     public void execute(Inventory inventory) {
         ArrayList<Medication> medicationList = inventory.getMedications();
+
+        // Check if inventory is empty
         if (medicationList.isEmpty()) {
             System.out.println("Inventory is empty.");
             return;
         }
+
+        // Sort medications by expiry date
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         medicationList.sort(Comparator.comparing(med -> {
             try {
                 return LocalDate.parse(med.getExpiryDate(), formatter);
             } catch (DateTimeParseException e) {
+                // Treat invalid dates as latest possible date
                 return LocalDate.MAX;
             }
         }));
 
+        // Display sorted medications
         System.out.println("Medications sorted by expiry date:");
         for (int i = 0; i < medicationList.size(); i++) {
-            Medication med = medicationList.get(i);
-            System.out.println((i + 1) + ". " + med.toString());
+            Medication medication = medicationList.get(i);
+            System.out.println((i + 1) + ". " + medication.toString());
         }
     }
 }
