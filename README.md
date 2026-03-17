@@ -8,27 +8,135 @@ Prerequisites: JDK 17 (use the exact version), update Intellij to the most recen
 
 1. **Ensure Intellij JDK 17 is defined as an SDK**, as described [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk) -- this step is not needed if you have used JDK 17 in a previous Intellij project.
 1. **Import the project _as a Gradle project_**, as described [here](https://se-education.org/guides/tutorials/intellijImportGradleProject.html).
-1. **Verify the setup**: After the importing is complete, locate the `src/main/java/seedu/duke/Duke.java` file, right-click it, and choose `Run Duke.main()`. If the setup is correct, you should see something like the below:
+1. **Run the application**: Locate `src/main/java/seedu/pharmatracker/PharmaTracker.java`, right-click it, and choose `Run 'PharmaTracker.main()'`. You should see output like:
 
    ```
-   > Task :compileJava
-   > Task :processResources NO-SOURCE
-   > Task :classes
-
-   > Task :Duke.main()
    Hello from
-    ____        _
-   |  _ \ _   _| | _____
-   | | | | | | | |/ / _ \
-   | |_| | |_| |   <  __/
-   |____/ \__,_|_|\_\___|
+    _____  _                               _______              _
+   |  __ \| |                             |__   __|            | |
+   | |__) | |__   __ _ _ __ _ __ ___   __ _  | | _ __ __ _  ___| | _____ _ __
+   |  ___/| '_ \ / _` | '__| '_ ` _ \ / _` | | || '__/ _` |/ __| |/ / _ \ '__|
+   | |    | | | | (_| | |  | | | | | | (_| | | || | | (_| | (__|   <  __/ |
+   |_|    |_| |_|\__,_|_|  |_| |_| |_|\__,_| |_||_|  \__,_|\___|_|\_\___|_|
 
-   What is your name?
+   ____________________________________________________________
+   Welcome to Pharma Tracker!
+   What can I do for you today?
+   ____________________________________________________________
+   Enter command:
    ```
 
-   Type some word and press enter to let the execution proceed to the end.
+   The application is now ready to accept commands. Type `list` to see all medications or `help` for available commands.
 
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+## Commands
+
+All commands use a flag-based format. Here are the available commands:
+
+### 1. Add Medication
+Adds a new medication to the inventory.
+
+```
+add /n <name> /d <dosage> /q <quantity> /e <yyyy-MM-dd> /t <tag> [optional flags]
+```
+
+**Required flags:**
+- `/n` - Medication name
+- `/d` - Dosage (e.g., 500mg)
+- `/q` - Quantity in stock
+- `/e` - Expiry date (yyyy-MM-dd format)
+- `/t` - Tag/Category
+
+**Optional flags:**
+- `/df` - Dosage Form (e.g., Capsule, Tablet)
+- `/mfr` - Manufacturer
+- `/dir` - Directions (e.g., Take after meals)
+- `/freq` - Frequency (e.g., Twice daily)
+- `/route` - Route of administration (e.g., Oral)
+- `/max` - Max daily dose
+- `/warn` - Warnings (can add multiple)
+
+**Examples:**
+```
+add /n Paracetamol /d 500mg /q 100 /e 2026-12-31 /t painkiller
+
+add /n Amoxicillin /d 250mg /q 50 /e 2026-06-01 /t antibiotic /df Capsule /mfr Pfizer /dir "Take after meals" /freq "Twice daily" /warn "May cause allergic reactions"
+```
+
+### 2. List Medications
+Displays all medications currently in the inventory.
+
+```
+list
+```
+
+### 3. Sort by Expiry Date
+Sorts all medications by expiry date (ascending order). Medications expiring sooner appear first.
+
+```
+sort
+```
+
+### 4. Find Medication
+Searches for medications by keyword.
+
+```
+find <keyword>
+```
+
+**Examples:**
+```
+find Paracetamol
+find antibiotic
+find 500mg
+```
+
+### 5. View Medication Details
+Displays complete details of a specific medication by index.
+
+```
+view <index>
+```
+
+**Example:**
+```
+view 1
+view 3
+```
+
+### 6. Dispense Medication
+Removes a quantity of medication from inventory (e.g., when dispensing to a patient).
+
+```
+dispense <index> q/<quantity>
+```
+
+**Examples:**
+```
+dispense 1 q/10
+dispense 2 q/50
+```
+
+### 7. Help
+Displays available commands.
+
+```
+help
+```
+
+### 8. Exit
+Exits the application.
+
+```
+exit
+```
+
+## Usage Tips
+
+- **Invalid Format**: If you enter a command incorrectly, PharmaTracker will display an error message with guidance
+- **Error Codes**: All errors include error codes (e.g., `[INVALID_FORMAT]`) to help identify the issue
+- **No Data Loss**: Even if an error occurs, the program continues running and doesn't exit
+- **Expiry Dates**: Always use `yyyy-MM-dd` format for dates (e.g., 2026-12-31)
+- **Special Characters**: If your input contains spaces, consider using quotes (e.g., `"Take after meals"`)
 
 ## Build automation using Gradle
 
