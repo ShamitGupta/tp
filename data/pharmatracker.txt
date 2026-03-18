@@ -4,3 +4,6 @@ Amox|250mg|200| 05/08/2018||||||||
 Paracetamol|500mg|100| 2026-12-31 |painkiller|||||||
 Amoxicillin|250mg|50| 2026-06-01 |antibiotic|Capsule|Pfizer|"Take after meals"|"Twice daily"|||"May cause allergic reactions"
 Amoxicillin|250mg|50| 2026-06-01 |antibiotic|Capsule|Pfizer|"Take after meals"|"Twice daily"|||"May cause allergic reactions"
+Paracetamol|500mg|50| 2026-12-31 |painkiller|||||||
+Ibuprofen|200mg|30| 2027-06-15 |anti-inflammatory|tablet|Pfizer|Take after food|Twice daily|Oral|400mg|
+
