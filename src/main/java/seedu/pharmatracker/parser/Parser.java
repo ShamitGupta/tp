@@ -16,9 +16,23 @@ import seedu.pharmatracker.exceptions.PharmaTrackerException;
 
 public class Parser {
 
+    public static final String FLAG_NAME = "/n";
+    public static final String FLAG_DOSAGE = "/d";
+    public static final String FLAG_QUANTITY = "/q";
+    public static final String FLAG_EXPIRY_DATE = "/e";
+    public static final String FLAG_TAG = "/t";
+    public static final String FLAG_DOSAGE_FORM = "/df";
+    public static final String FLAG_MANUFACTURER = "/mfr";
+    public static final String FLAG_DIRECTION = "/dir";
+    public static final String FLAG_FREQUENCY = "/freq";
+    public static final String FLAG_ROUTE = "/route";
+    public static final String FLAG_MAX_DOSAGE = "/max";
+    public static final String FLAG_WARNINGS = "/warn";
+
     private static final String[] ALL_FLAGS = {
-        "/n", "/d", "/q", "/e", "/t", "/df", "/mfr",
-        "/dir", "/freq", "/route", "/max", "/warn"
+            FLAG_NAME, FLAG_DOSAGE, FLAG_QUANTITY, FLAG_EXPIRY_DATE, FLAG_TAG,
+            FLAG_DOSAGE_FORM, FLAG_MANUFACTURER, FLAG_DIRECTION, FLAG_FREQUENCY,
+            FLAG_ROUTE, FLAG_MAX_DOSAGE, FLAG_WARNINGS
     };
 
     private static int findNextFlagIndex(String description, int afterIndex) throws PharmaTrackerException {
@@ -58,8 +72,8 @@ public class Parser {
     }
 
     public static String extractName(String description) throws PharmaTrackerException {
-        int nameIndex = description.indexOf("/n");
-        int dosageIndex = description.indexOf("/d");
+        int nameIndex = description.indexOf(FLAG_NAME);
+        int dosageIndex = description.indexOf(FLAG_DOSAGE);
 
         if (nameIndex == -1 || dosageIndex == -1 || nameIndex >= dosageIndex) {
             throw new PharmaTrackerException("Invalid format! Please ensure you include '/n' followed by '/d'.");
@@ -74,8 +88,8 @@ public class Parser {
     }
 
     public static String extractDosage(String description) throws PharmaTrackerException {
-        int dosageIndex = description.indexOf("/d");
-        int quantityIndex = description.indexOf("/q");
+        int dosageIndex = description.indexOf(FLAG_DOSAGE);
+        int quantityIndex = description.indexOf(FLAG_QUANTITY);
 
         if (dosageIndex == -1 || quantityIndex == -1 || dosageIndex > quantityIndex) {
             throw new PharmaTrackerException("Invalid format! Please ensure you include '/d' followed by '/q'.");
@@ -90,8 +104,8 @@ public class Parser {
     }
 
     public static int extractQuantity(String description) throws PharmaTrackerException {
-        int quantityIndex = description.indexOf("/q");
-        int expiryIndex = description.indexOf("/e");
+        int quantityIndex = description.indexOf(FLAG_QUANTITY);
+        int expiryIndex = description.indexOf(FLAG_EXPIRY_DATE);
 
         if (quantityIndex == -1 || expiryIndex == -1 || quantityIndex > expiryIndex) {
             throw new PharmaTrackerException("Invalid format! Please ensure you include '/q' followed by '/e'.");
@@ -114,7 +128,7 @@ public class Parser {
     }
 
     public static String extractExpiryDate(String description) throws PharmaTrackerException {
-        int expiryIndex = description.indexOf("/e");
+        int expiryIndex = description.indexOf(FLAG_EXPIRY_DATE);
         if (expiryIndex == -1) {
             throw new PharmaTrackerException("Invalid format! Please ensure you include the '/e' flag.");
         }
@@ -139,11 +153,11 @@ public class Parser {
         ArrayList<String> warnings = new ArrayList<>();
         int searchFrom = 0;
         while (true) {
-            int idx = description.indexOf("/warn", searchFrom);
+            int idx = description.indexOf(FLAG_WARNINGS, searchFrom);
             if (idx == -1) {
                 break;
             }
-            int valueStart = idx + "/warn".length();
+            int valueStart = idx + FLAG_WARNINGS.length();
             int valueEnd = findNextFlagIndex(description, valueStart);
             String value = description.substring(valueStart, valueEnd).trim();
             if (!value.isEmpty()) {
@@ -165,17 +179,17 @@ public class Parser {
             String dosage = extractDosage(description);
             int quantity = extractQuantity(description);
             String expiryDate = extractExpiryDate(description);
-            String tag = extractFlag(description, "/t");
-            String dosageForm = extractFlag(description, "/df");
-            String manufacturer = extractFlag(description, "/mfr");
-            String directions = extractFlag(description, "/dir");
-            String frequency = extractFlag(description, "/freq");
-            String route = extractFlag(description, "/route");
-            String maxDailyDose = extractFlag(description, "/max");
+            String tag = extractFlag(description, FLAG_TAG);
+            String dosageForm = extractFlag(description, FLAG_DOSAGE_FORM);
+            String manufacturer = extractFlag(description, FLAG_MANUFACTURER);
+            String directions = extractFlag(description, FLAG_DIRECTION);
+            String frequency = extractFlag(description, FLAG_FREQUENCY);
+            String route = extractFlag(description, FLAG_ROUTE);
+            String maxDailyDose = extractFlag(description, FLAG_MAX_DOSAGE);
             ArrayList<String> warnings = extractWarnings(description);
             return new AddCommand(name, dosage, quantity, expiryDate, tag,
-                    dosageForm, manufacturer, directions, frequency, route,
-                    maxDailyDose, warnings);
+                                  dosageForm, manufacturer, directions, frequency,
+                                  route, maxDailyDose, warnings);
 
         case "delete":
             System.out.println("Delete command triggered.");
