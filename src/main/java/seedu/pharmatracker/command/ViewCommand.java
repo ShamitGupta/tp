@@ -38,6 +38,9 @@ public class ViewCommand extends Command {
     public void execute(Inventory inventory, Ui ui) {
         logger.log(Level.INFO, "Starting execution of ViewCommand for index: " + index);
 
+        assert inventory != null : "Inventory cannot be null in ViewCommand";
+        assert ui != null : "Ui cannot be null in ViewCommand";
+
         if (inventory.getMedications().isEmpty()) {
             logger.log(Level.WARNING, "Attempted to view medication from empty inventory.");
             System.out.println("Inventory is empty.");
@@ -51,6 +54,8 @@ public class ViewCommand extends Command {
             return;
         }
         Medication med = inventory.getMedication(index - 1);
+        assert med != null : "Retrieved medication to view cannot be null";
+
         ui.printMedicationDetails(med);
 
         logger.log(Level.INFO, "Successfully executed ViewCommand.");

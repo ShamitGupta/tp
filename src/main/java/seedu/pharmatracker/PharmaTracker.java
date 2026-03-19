@@ -1,6 +1,7 @@
 package seedu.pharmatracker;
 
 import static seedu.pharmatracker.parser.Parser.parse;
+import seedu.pharmatracker.logger.LoggerSetup;
 
 import seedu.pharmatracker.command.Command;
 import seedu.pharmatracker.data.Inventory;
@@ -64,6 +65,7 @@ public class PharmaTracker {
      * @throws PharmaTrackerException If a fatal error occurs during application run.
      */
     public static void main(String[] args) throws PharmaTrackerException {
+        LoggerSetup.init();
         new PharmaTracker().run();
     }
 }

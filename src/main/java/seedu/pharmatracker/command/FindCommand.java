@@ -40,6 +40,9 @@ public class FindCommand extends Command {
     public void execute(Inventory inventory, Ui ui) {
         logger.log(Level.INFO, "Starting execution of FindCommand with keyword: " + keyword);
 
+        assert inventory != null : "Inventory cannot be null in FindCommand";
+        assert ui != null : "Ui cannot be null in FindCommand";
+
         ArrayList<Medication> medicationList = inventory.getMedications();
         ArrayList<Medication> matchingMedications = new ArrayList<>();
 
