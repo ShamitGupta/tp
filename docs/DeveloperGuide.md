@@ -192,6 +192,27 @@ Cmd --> User : success message with customer name
 
 ---
 
+### View Customer Feature
+
+This view-customer mechanism allows users to view the details of a chosen customer, including
+their ID, name, phone number, address, and dispensing history.
+```
+view-customer 1
+```
+#### How it works
+
+The following steps describe how an add command is processed.
+
+1. The user enters `view-customer 1`.
+2. `PharmaTracker.run()` reads the user input and passes the raw string to `Parser.parse()`.
+3. `Parser.parse()` identifies the command word `view-customer`.
+4. The parser then extracts the index from the description segment of the input.
+5. The extracted index is used to create a new `ViewCustomerCommand` object.
+6. `PharmaTracker.run()` calls `ViewCustomerCommand.execute()`, which obtains the indexed customer from customerList.
+7. Finally, `Ui.showCustomerDetails(customer)` is called to display the customer's details.
+
+---
+
 ## Product scope
 
 ### Target user profile

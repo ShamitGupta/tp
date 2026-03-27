@@ -14,7 +14,7 @@ import seedu.pharmatracker.ui.Ui;
  */
 public class ViewCustomerCommand extends Command {
 
-    public static final String COMMAND_WORD = "viewcustomer";
+    public static final String COMMAND_WORD = "view-customer";
 
     private static final Logger logger = Logger.getLogger(ViewCustomerCommand.class.getName());
     private final int index;
