@@ -9,7 +9,7 @@ import seedu.pharmatracker.ui.Ui;
 
 public class AddCustomerCommand extends Command {
 
-    public static final String COMMAND_WORD = "add customer";
+    public static final String COMMAND_WORD = "add-customer";
 
     private final String customerId;
     private final String name;

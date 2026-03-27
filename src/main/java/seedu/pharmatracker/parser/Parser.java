@@ -228,6 +228,29 @@ public class Parser {
         return warnings;
     }
 
+    private static String extractCustomerID(String description) {
+        int idIndex = description.indexOf("/id");
+        int nameIndex = description.indexOf("/n");
+        return description.substring(idIndex + 3, nameIndex).trim();
+    }
+
+    public static String extractCustomerName(String description) {
+        int nameIndex = description.indexOf("/n");
+        int phoneIndex = description.indexOf("/p");
+        return description.substring(nameIndex + 2, phoneIndex);
+    }
+
+    public static String extractCustomerPhone(String description) {
+        int phoneIndex = description.indexOf("/p");
+        int addressIndex = description.indexOf("/addr");
+        return description.substring(phoneIndex + 2, addressIndex);
+    }
+
+    public static String extractCustomerAddress(String description) {
+        int addressIndex = description.indexOf("/addr");
+        return description.substring(addressIndex + 5);
+    }
+
     /**
      * Parses the full raw user input and returns the corresponding executable {@link Command}.
      *
@@ -338,8 +361,11 @@ public class Parser {
             return null;
 
         case AddCustomerCommand.COMMAND_WORD:
-
-
+            String id = extractCustomerID(description);
+            String customerName = extractCustomerName(description);
+            String phone = extractCustomerPhone(description);
+            String address = extractCustomerAddress(description);
+            return new AddCustomerCommand(id, customerName, phone, address);
 
         case ViewCustomerCommand.COMMAND_WORD:
             try {
