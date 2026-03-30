@@ -1,10 +1,12 @@
 package seedu.pharmatracker;
 
 import static seedu.pharmatracker.parser.Parser.parse;
+import seedu.pharmatracker.logger.LoggerSetup;
 
 import seedu.pharmatracker.command.Command;
 import seedu.pharmatracker.data.Inventory;
 import seedu.pharmatracker.storage.Storage;
+import seedu.pharmatracker.customer.CustomerList;
 import seedu.pharmatracker.exceptions.PharmaTrackerException;
 import seedu.pharmatracker.ui.Ui;
 
@@ -17,6 +19,7 @@ public class PharmaTracker {
     private Ui ui;
     private Inventory inventory;
     private Storage storage;
+    private CustomerList customerList;
 
     /**
      * Constructs a {@code PharmaTracker} application instance.
@@ -27,6 +30,7 @@ public class PharmaTracker {
         ui = new Ui();
         storage = new Storage();
         inventory = storage.load();
+        customerList = new CustomerList();
     }
 
     /**
@@ -47,7 +51,7 @@ public class PharmaTracker {
             try {
                 Command c = parse(fullCommand);
                 if (c != null) {
-                    c.execute(inventory, ui);
+                    c.execute(inventory, ui, customerList);
                     storage.save(inventory);
                 }
             } catch (PharmaTrackerException e) {
@@ -64,6 +68,8 @@ public class PharmaTracker {
      * @throws PharmaTrackerException If a fatal error occurs during application run.
      */
     public static void main(String[] args) throws PharmaTrackerException {
+        LoggerSetup.init();
+        assert false : "Main method set to false";
         new PharmaTracker().run();
     }
 }

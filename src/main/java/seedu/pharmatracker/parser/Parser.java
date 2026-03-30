@@ -3,6 +3,7 @@ package seedu.pharmatracker.parser;
 import java.util.ArrayList;
 
 import seedu.pharmatracker.command.AddCommand;
+import seedu.pharmatracker.command.AddCustomerCommand;
 import seedu.pharmatracker.command.Command;
 import seedu.pharmatracker.command.DeleteCommand;
 import seedu.pharmatracker.command.ListCommand;
@@ -13,6 +14,9 @@ import seedu.pharmatracker.command.DispenseCommand;
 import seedu.pharmatracker.command.HelpCommand;
 import seedu.pharmatracker.command.ExitCommand;
 import seedu.pharmatracker.command.LabelCommand;
+import seedu.pharmatracker.command.ExpiringCommand;
+import seedu.pharmatracker.command.ViewCustomerCommand;
+import seedu.pharmatracker.command.RestockCommand;
 import seedu.pharmatracker.exceptions.PharmaTrackerException;
 
 /**
@@ -224,6 +228,29 @@ public class Parser {
         return warnings;
     }
 
+    private static String extractCustomerID(String description) {
+        int idIndex = description.indexOf("/id");
+        int nameIndex = description.indexOf("/n");
+        return description.substring(idIndex + 3, nameIndex).trim();
+    }
+
+    public static String extractCustomerName(String description) {
+        int nameIndex = description.indexOf("/n");
+        int phoneIndex = description.indexOf("/p");
+        return description.substring(nameIndex + 2, phoneIndex);
+    }
+
+    public static String extractCustomerPhone(String description) {
+        int phoneIndex = description.indexOf("/p");
+        int addressIndex = description.indexOf("/addr");
+        return description.substring(phoneIndex + 2, addressIndex);
+    }
+
+    public static String extractCustomerAddress(String description) {
+        int addressIndex = description.indexOf("/addr");
+        return description.substring(addressIndex + 5);
+    }
+
     /**
      * Parses the full raw user input and returns the corresponding executable {@link Command}.
      *
@@ -308,6 +335,59 @@ public class Parser {
                 return new LabelCommand(descIndex);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid index. Please enter a valid number.");
+                break;
+            }
+
+        case ExpiringCommand.COMMAND_WORD:
+            if (description.isEmpty()) {
+                return new ExpiringCommand();
+            }
+            if (description.contains("/days")) {
+                try {
+                    String daysStr = description.substring(
+                            description.indexOf("/days") + "/days".length()).trim();
+                    int days = Integer.parseInt(daysStr);
+                    if (days <= 0) {
+                        System.out.println("Number of days must be a positive integer.");
+                        return null;
+                    }
+                    return new ExpiringCommand(days);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid number of days. Usage: expiring /days NUMBER");
+                    return null;
+                }
+            }
+            System.out.println("Invalid format. Usage: expiring or expiring /days NUMBER");
+            return null;
+
+        case AddCustomerCommand.COMMAND_WORD:
+            String id = extractCustomerID(description);
+            String customerName = extractCustomerName(description);
+            String phone = extractCustomerPhone(description);
+            String address = extractCustomerAddress(description);
+            return new AddCustomerCommand(id, customerName, phone, address);
+
+        case ViewCustomerCommand.COMMAND_WORD:
+            try {
+                int index = Integer.parseInt(description.trim());
+                return new ViewCustomerCommand(index);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid format. Usage: viewcustomer INDEX");
+                return null;
+            }
+
+        case RestockCommand.COMMAND_WORD:
+            if (description.isEmpty()) {
+                System.out.println("Please provide an index and quantity.");
+                break;
+            }
+            try {
+                String[] restockParts = description.trim().split("/q");
+                int restockIndex = Integer.parseInt(restockParts[0].trim());
+                int restockQuantity = Integer.parseInt(restockParts[1].trim());
+                return new RestockCommand(restockIndex, restockQuantity);
+            } catch (Exception e) {
+                System.out.println("Invalid format. Use: restock INDEX /q QUANTITY");
                 break;
             }
 
