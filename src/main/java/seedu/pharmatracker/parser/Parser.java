@@ -294,7 +294,7 @@ public class Parser {
      *
      * @param description The raw string containing command arguments.
      * @return The extracted customer name.
-     * @throws PharmaTrackerException PharmaTrackerException If the format is invalid, missing flags, or if the name is empty.
+     * @throws PharmaTrackerException PharmaTrackerException If the format is invalid.
      *
      */
     public static String extractCustomerName(String description) throws PharmaTrackerException {
@@ -319,7 +319,7 @@ public class Parser {
      *
      * @param description The raw string containing command arguments.
      * @return The extracted customer phone number.
-     * @throws PharmaTrackerException PharmaTrackerException If the format is invalid, missing flags, or if the phone is empty.
+     * @throws PharmaTrackerException PharmaTrackerException If the format is invalid.
      */
     public static String extractCustomerPhone(String description) throws PharmaTrackerException {
         int phoneIndex = description.indexOf("/p");
