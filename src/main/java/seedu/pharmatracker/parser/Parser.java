@@ -332,7 +332,7 @@ public class Parser {
         int endIndex = (addressIndex == -1) ? description.length() : addressIndex;
 
         if (phoneIndex >= endIndex) {
-            throw new PharmaTrackerException("Invalid format! '/p' must come before '/addr' if an address is provided.");
+            throw new PharmaTrackerException("Invalid format! '/p' must come before '/addr'");
         }
 
         String phone = description.substring(phoneIndex + 2, addressIndex);
