@@ -9,6 +9,7 @@ import seedu.pharmatracker.command.DeleteCommand;
 import seedu.pharmatracker.command.ListCommand;
 import seedu.pharmatracker.command.SortCommand;
 import seedu.pharmatracker.command.FindCommand;
+import seedu.pharmatracker.command.UpdateCommand;
 import seedu.pharmatracker.command.ViewCommand;
 import seedu.pharmatracker.command.DispenseCommand;
 import seedu.pharmatracker.command.HelpCommand;
@@ -231,6 +232,60 @@ public class Parser {
             searchFrom = valueStart;
         }
         return warnings;
+    }
+
+    /**
+     * Extracts the string value associated with an optional flag.
+     * Unlike extractFlag, this returns null if the flag is not present.
+     *
+     * @param description The raw string containing command arguments.
+     * @param flag The specific flag to search for.
+     * @return The extracted string value, or null if the flag is not present.
+     * @throws PharmaTrackerException If the flag is present but has no accompanying value.
+     */
+    private static String extractOptionalFlag(String description, String flag) throws PharmaTrackerException {
+        int flagIndex = description.indexOf(flag);
+        if (flagIndex == -1) {
+            return null;
+        }
+
+        int valueStart = flagIndex + flag.length();
+        if (valueStart >= description.length()) {
+            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
+        }
+
+        int valueEnd = findNextFlagIndex(description, valueStart);
+        String extractedValue = description.substring(valueStart, valueEnd).trim();
+
+        if (extractedValue.isEmpty()) {
+            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
+        }
+
+        return extractedValue;
+    }
+
+    /**
+     * Extracts the optional medication quantity and converts it to an Integer object.
+     *
+     * @param description The raw string containing command arguments.
+     * @return The extracted Integer quantity, or null if the /q flag is not present.
+     * @throws PharmaTrackerException If the quantity format is invalid or negative.
+     */
+    private static Integer extractOptionalQuantity(String description) throws PharmaTrackerException {
+        String quantityString = extractOptionalFlag(description, FLAG_QUANTITY);
+        if (quantityString == null) {
+            return null;
+        }
+
+        try {
+            int quantity = Integer.parseInt(quantityString);
+            if (quantity < 0) {
+                throw new PharmaTrackerException("Quantity cannot be negative!");
+            }
+            return quantity;
+        } catch (NumberFormatException e) {
+            throw new PharmaTrackerException("Invalid quantity! Please enter a valid whole number.");
+        }
     }
 
     /**
@@ -487,6 +542,37 @@ public class Parser {
             }
             System.out.println("Invalid format. Usage: expiring or expiring /days NUMBER");
             return null;
+
+        case UpdateCommand.COMMAND_WORD:
+            if (description.isEmpty()) {
+                throw new PharmaTrackerException(
+                        "Invalid format! Use: update INDEX [/n NAME] [/d DOSAGE] [/q QUANTITY] [/e EXPIRY]...");
+            }
+            try {
+                String[] updateParts = description.trim().split("\\s+", 2);
+                int updateIndex = Integer.parseInt(updateParts[0]);
+                String updateArgs = (updateParts.length > 1) ? updateParts[1] : "";
+
+                String uName = extractOptionalFlag(updateArgs, FLAG_NAME);
+                String uDosage = extractOptionalFlag(updateArgs, FLAG_DOSAGE);
+                Integer uQuantity = extractOptionalQuantity(updateArgs);
+                String uExpiry = extractOptionalFlag(updateArgs, FLAG_EXPIRY_DATE);
+                String uTag = extractOptionalFlag(updateArgs, FLAG_TAG);
+                String uDosageForm = extractOptionalFlag(updateArgs, FLAG_DOSAGE_FORM);
+                String uManufacturer = extractOptionalFlag(updateArgs, FLAG_MANUFACTURER);
+                String uDirections = extractOptionalFlag(updateArgs, FLAG_DIRECTION);
+                String uFrequency = extractOptionalFlag(updateArgs, FLAG_FREQUENCY);
+                String uRoute = extractOptionalFlag(updateArgs, FLAG_ROUTE);
+                String uMaxDailyDose = extractOptionalFlag(updateArgs, FLAG_MAX_DOSAGE);
+
+                ArrayList<String> uWarnings = extractWarnings(updateArgs);
+
+                return new UpdateCommand(updateIndex, uName, uDosage, uQuantity, uExpiry, uTag,
+                        uDosageForm, uManufacturer, uDirections, uFrequency, uRoute, uMaxDailyDose, uWarnings);
+            } catch (NumberFormatException e) {
+                throw new PharmaTrackerException(
+                        "Invalid index! The first argument must be a valid number.");
+            }
 
         case AddCustomerCommand.COMMAND_WORD:
             String id = extractCustomerID(description);

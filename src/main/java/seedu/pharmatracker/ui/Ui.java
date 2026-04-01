@@ -306,4 +306,13 @@ public class Ui {
         System.out.println(DIVIDER);
     }
 
+    public void printUpdatedMedicationMessage(Medication med, ArrayList<String> changes) {
+        String changeString = String.join(" | ", changes);
+        printToScreen(
+                DIVIDER,
+                "Medication updated: " + med.getName() + " | " + changeString,
+                DIVIDER
+        );
+    }
+
 }

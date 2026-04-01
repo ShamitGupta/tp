@@ -130,6 +130,22 @@ public class Medication {
         return this.warnings;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
+    }
+
+    public void setExpiryDate(String expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     /**
      * Adds a warning string to the medication's list of warnings.
      *
