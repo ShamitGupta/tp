@@ -1,15 +1,56 @@
 @startuml
-'https://plantuml.com/sequence-diagram
+skinparam ArrowFontStyle plain
 
-autonumber
+actor User
+participant ":PharmaTracker" as PharmaTracker
+participant ":Ui" as Ui
+participant "<<class>>\nParser" as Parser
+participant "d:DeleteCommand" as DeleteCommand
+participant ":Inventory" as Inventory
+participant ":Storage" as Storage
 
-== Initialization ==
+User -> Ui : input commandString
+activate Ui
+Ui --> PharmaTracker : fullCommand
+deactivate Ui
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+PharmaTracker -> Parser : parse(fullCommand)
+activate Parser
 
-== Repetition ==
+create DeleteCommand
+Parser -> DeleteCommand : new DeleteCommand(targetIndexString)
+activate DeleteCommand
+DeleteCommand --> Parser : d
+deactivate DeleteCommand
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+Parser --> PharmaTracker : d
+deactivate Parser
+
+PharmaTracker -> DeleteCommand : execute(inventory, ui, customerList)
+activate DeleteCommand
+
+DeleteCommand -> Inventory : getMedication(zeroBasedIndex)
+activate Inventory
+Inventory --> DeleteCommand : med
+deactivate Inventory
+
+DeleteCommand -> Inventory : removeMedication(med)
+activate Inventory
+Inventory --> DeleteCommand
+deactivate Inventory
+
+DeleteCommand -> Ui : printDeletedMessage(med, inventory)
+activate Ui
+Ui --> DeleteCommand
+deactivate Ui
+
+DeleteCommand --> PharmaTracker
+deactivate DeleteCommand
+destroy DeleteCommand
+
+PharmaTracker -> Storage : save(inventory)
+activate Storage
+Storage --> PharmaTracker
+deactivate Storage
+
 @enduml
