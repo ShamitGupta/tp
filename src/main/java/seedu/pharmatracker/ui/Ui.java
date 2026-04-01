@@ -285,5 +285,25 @@ public class Ui {
                 DIVIDER
         );
     }
+    
+    /**
+     * Displays a numbered list of all registered customers.
+     *
+     * @param customerList The list of customers to display.
+     */
+    public void printCustomerList(CustomerList customerList) {
+        System.out.println(DIVIDER);
+        System.out.println("PharmaTracker Customers:");
+        if (customerList.size() == 0) {
+            System.out.println("No customers registered yet.");
+        } else {
+            for (int i = 0; i < customerList.size(); i++) {
+                Customer customer = customerList.getCustomer(i);
+                System.out.println((i + 1) + ". " + customer.toString());
+            }
+            System.out.println("Total Customers: " + customerList.size() + ".");
+        }
+        System.out.println(DIVIDER);
+    }
 
 }
