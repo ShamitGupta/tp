@@ -274,4 +274,13 @@ public class Ui {
         );
     }
 
+    public void printUpdatedMedicationMessage(Medication med, ArrayList<String> changes) {
+        String changeString = String.join(" | ", changes);
+        printToScreen(
+                DIVIDER,
+                "Medication updated: " + med.getName() + " | " + changeString,
+                DIVIDER
+        );
+    }
+
 }
