@@ -33,14 +33,28 @@ PharmaTracker is a command-line application for pharmacy staff to manage medicat
 
 Adds a new medication to the inventory.
 
-Format: `add /n NAME /d DOSAGE /q QUANTITY /e EXPIRY [/t TAG] [/df DOSAGE_FORM] [/mfr MANUFACTURER] [/dir DIRECTIONS] [/freq FREQUENCY] [/route ROUTE] [/max MAX_DAILY_DOSE] [/warn WARNING]`
+**Format:** `add /n NAME /d DOSAGE /q QUANTITY /e EXPIRY [/t TAG] [/df DOSAGE_FORM] [/mfr MANUFACTURER] [/dir DIRECTIONS] [/freq FREQUENCY] [/route ROUTE] [/max MAX_DAILY_DOSE] [/warn WARNING]`
 
-- `EXPIRY` must be in `dd/MM/yyyy` format.
-- `/warn` can be repeated for multiple warnings.
+**Mandatory Parameters:**
+* `/n NAME`: The name of the medication. 
+* `/d DOSAGE`: The strength or dosage (e.g., 500mg).
+* `/q QUANTITY`: The number of units in stock. **Must be a positive integer**.
+* `/e EXPIRY`: The expiration date. **Must be in `DD/MM/YYYY` format**.
 
-Examples:
-- `add /n Paracetamol /d 500mg /q 100 /e 31/12/2026 /t painkiller`
-- `add /n Amoxicillin /d 250mg /q 50 /e 01/06/2026 /t antibiotic /df Capsule /mfr Pfizer /warn May cause allergic reactions`
+**Optional Parameters:**
+* `/t TAG`: A category to group the medication (e.g., `antibiotic`, `painkiller`).
+* `/df DOSAGE_FORM`: The physical form of the medication (e.g., `Tablet`, `Syrup`, `Ointment`).
+* `/mfr MANUFACTURER`: The company that produces the medication (e.g., `Pfizer`, `GSK`).
+* `/dir DIRECTIONS`: Specific instructions for consumption (e.g., `Take after meals`, `Dissolve in water`).
+* `/freq FREQUENCY`: How often the medication should be taken (e.g., `Twice a day`, `Every 8 hours`).
+* `/route ROUTE`: The method of administration (e.g., `Oral`, `Topical`, `Intravenous`).
+* `/max MAX_DAILY_DOSE`: The maximum safe limit to consume within 24 hours (e.g., `4000mg`, `4 tablets`).
+* `/warn WARNING`: Important safety warnings or side effects. This parameter can be repeated to add multiple warnings (e.g., `/warn Drowsiness /warn Avoid alcohol`).
+
+**Examples:**
+* `add /n Paracetamol /d 500mg /q 100 /e 31/12/2026 /t painkiller`
+* `add /n Amoxicillin /d 250mg /q 50 /e 01/06/2026 /t antibiotic /df Capsule /mfr Pfizer /warn May cause allergic reactions`
+* `add /n Cough Syrup /d 15mg/5ml /q 20 /e 15/10/2025 /df Syrup /dir Shake well before use /freq Every 6 hours /route Oral`
 
 ---
 
@@ -140,19 +154,6 @@ WARNINGS & PRECAUTIONS
 - May cause allergic reactions
 ========================================
 ```
-
----
-
-### Delete a medication: `delete`
-
-Removes a medication from the inventory by its index.
-
-Format: `delete INDEX`
-
-Example: `delete 2`
-
----
-
 ### Dispense a medication: `dispense`
 
 Reduces the stock of a medication by the specified quantity. Optionally links the
