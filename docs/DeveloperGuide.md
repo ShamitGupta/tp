@@ -276,18 +276,18 @@ The `list` feature provides a summary view of the entire inventory, allowing use
 ---
 ### List Customers Feature
 
-The `listcustomers` command retrieves and displays all registered customers with their
+The `list-customers` command retrieves and displays all registered customers with their
 customer ID, name, and phone number. It is a read-only command that requires no arguments.
 
 ```
-listcustomers
+list-customers
 ```
 
 #### How it works
 
-1. The user enters `listcustomers`.
+1. The user enters `list-customers`.
 2. `PharmaTracker.run()` reads the input and passes it to `Parser.parse()`.
-3. `Parser.parse()` identifies the command word `listcustomers` and returns a new
+3. `Parser.parse()` identifies the command word `list-customers` and returns a new
    `ListCustomersCommand` object — no arguments are required.
 4. `PharmaTracker.run()` calls `ListCustomersCommand.execute()`, which calls
    `CustomerList.getAllCustomers()` to retrieve the full customer list.
@@ -297,7 +297,7 @@ listcustomers
    - Otherwise, each `Customer` is printed with a 1-based index, their customer ID,
      name, and phone number, followed by a total count.
 
-The following sequence diagram shows the full execution flow of the `listcustomers` command:
+The following sequence diagram shows the full execution flow of the `list-customers` command:
 
 ![Sequence diagram showing the execution flow of the List Customers Command](images/ListCustomersCommandSequence.png)
 
@@ -449,24 +449,24 @@ The following sequence diagram shows the full execution flow of the `view-custom
 
 ### Update Customer Feature
 
-The `updatecustomer` command allows pharmacy staff to update one or more fields of an existing customer record.
+The `update-customer` command allows pharmacy staff to update one or more fields of an existing customer record.
 Only the fields explicitly provided are changed; all other fields remain unchanged.
 ```
-updatecustomer INDEX [/n NAME] [/p PHONE] [/a ADDRESS]
+update-customer INDEX [/n NAME] [/p PHONE] [/a ADDRESS]
 ```
 
 #### How it works
 
-1. The user enters `updatecustomer 1 /n Alice /p 91234567 /a 123 Main St`.
+1. The user enters `update-customer 1 /n Alice /p 91234567 /a 123 Main St`.
 2. `PharmaTracker.run()` passes the input to `Parser.parse()`.
-3. `Parser.parse()` identifies the command word `updatecustomer`.
+3. `Parser.parse()` identifies the command word `update-customer`.
 4. The parser splits the description into the 1-based index and a trailing argument string. It then calls `extractCustomerUpdateFlag()` for each of the `/n`, `/p`, and `/a` flags. Flags that are absent return `null`.
 5. An `UpdateCustomerCommand` is constructed with the index and the three (nullable) field values.
 6. `UpdateCustomerCommand.execute()` validates the index against `CustomerList.size()`. If no flags were supplied (all three are `null`), it prints an error and returns early.
 7. For each non-null field, the corresponding setter (`customer.setName()`, `customer.setPhone()`, `customer.setAddress()`) is called on the retrieved `Customer` object.
 8. `Ui.printUpdatedCustomerMessage(customer)` confirms the update to the user.
 
-The following sequence diagram shows the full execution flow of the `updatecustomer` command:
+The following sequence diagram shows the full execution flow of the `update-customer` command:
 
 ![Sequence diagram showing the execution flow of the Update Customer Command](images/updateCustomerCommandDiagram.png)
 
@@ -715,7 +715,7 @@ Fast, lightweight medication tracking without needing a database or internet con
 
 ### Listing customers
 
-1. Enter: `listcustomers`
+1. Enter: `list-customers`
 2. **Expected (with customers):** Numbered list showing `[C001] John Tan | Phone: 99887766`, followed by total count.
 3. **Expected (no customers):** `No customers registered yet.`
 
@@ -735,11 +735,11 @@ Fast, lightweight medication tracking without needing a database or internet con
 
 ### Updating a customer
 
-1. Enter: `updatecustomer 1 /n Alice Tan /p 91234567`
+1. Enter: `update-customer 1 /n Alice Tan /p 91234567`
 2. **Expected:** Confirmation showing updated customer details; address is unchanged.
-3. All fields: `updatecustomer 1 /n Alice Tan /p 91234567 /a 10 Orchard Road` → all three fields updated.
-4. No flags supplied: `updatecustomer 1` → error `No fields provided to update! Use /n, /p, or /a flags.`
-5. Invalid index: `updatecustomer 99 /n Alice` → error message for out-of-bounds index.
+3. All fields: `update-customer 1 /n Alice Tan /p 91234567 /a 10 Orchard Road` → all three fields updated.
+4. No flags supplied: `update-customer 1` → error `No fields provided to update! Use /n, /p, or /a flags.`
+5. Invalid index: `update-customer 99 /n Alice` → error message for out-of-bounds index.
 
 ### Checking low stock
 

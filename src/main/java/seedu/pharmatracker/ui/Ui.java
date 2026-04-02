@@ -361,12 +361,12 @@ public class Ui {
         System.out.println("11. Low Stock Alert          (lowstock | lowstock /threshold NUMBER)");
         System.out.println("12. Expiring Medications     (expiring | expiring /days NUMBER)");
         System.out.println("--- Customer Commands ---");
-        System.out.println("13. Add Customer             (addcustomer /n NAME /p PHONE /a ADDRESS)");
-        System.out.println("14. Delete Customer          (deletecustomer INDEX)");
-        System.out.println("15. Update Customer          (updatecustomer INDEX /n NAME /p PHONE /a ADDRESS)");
-        System.out.println("16. List Customers           (listcustomers)");
-        System.out.println("17. Find Customer            (findcustomer KEYWORD)");
-        System.out.println("18. View Customer            (viewcustomer INDEX)");
+        System.out.println("13. Add Customer             (add-customer /n NAME /p PHONE /a ADDRESS)");
+        System.out.println("14. Delete Customer          (delete-customer INDEX)");
+        System.out.println("15. Update Customer          (update-customer INDEX /n NAME /p PHONE /a ADDRESS)");
+        System.out.println("16. List Customers           (list-customers)");
+        System.out.println("17. Find Customer            (find-customer KEYWORD)");
+        System.out.println("18. View Customer            (view-customer INDEX)");
         System.out.println("--- General ---");
         System.out.println("19. Viewing Help             (help)");
         System.out.println("20. Exiting the Program      (exit)");

@@ -440,19 +440,19 @@ No medications dispensed yet.
 
 ---
 
-### Update a customer: `updatecustomer`
+### Update a customer: `update-customer`
 
 Updates one or more fields of an existing customer record. Only the fields you provide are changed; all others remain unchanged.
 
-Format: `updatecustomer INDEX [/n NAME] [/p PHONE] [/a ADDRESS]`
+Format: `update-customer INDEX [/n NAME] [/p PHONE] [/a ADDRESS]`
 
 - At least one of `/n`, `/p`, or `/a` must be provided.
-- `INDEX` is the 1-based position of the customer as shown in `listcustomers`.
+- `INDEX` is the 1-based position of the customer as shown in `list-customers`.
 
 Examples:
-- `updatecustomer 1 /n Alice Tan` — updates name only
-- `updatecustomer 2 /p 81234567 /a 99 Clementi Ave` — updates phone and address
-- `updatecustomer 1 /n Bob /p 98765432 /a 5 Bukit Timah Road` — updates all three fields
+- `update-customer 1 /n Alice Tan` — updates name only
+- `update-customer 2 /p 81234567 /a 99 Clementi Ave` — updates phone and address
+- `update-customer 1 /n Bob /p 98765432 /a 5 Bukit Timah Road` — updates all three fields
 
 Expected output:
 ```
@@ -514,9 +514,9 @@ A: PharmaTracker will display an error message and leave the inventory or custom
 | Check low stock     | `lowstock [/threshold NUMBER]` |
 | Print label         | `label INDEX` |
 | Add customer        | `add-customer /id ID /n NAME /p PHONE /addr ADDRESS` |
-| List customers      | `listcustomers` |
+| List customers      | `list-customers` |
 | View customer       | `view-customer INDEX` |
-| Update customer     | `updatecustomer INDEX [/n NAME] [/p PHONE] [/a ADDRESS]` |
+| Update customer     | `update-customer INDEX [/n NAME] [/p PHONE] [/a ADDRESS]` |
 | Delete customer     | `delete-customer INDEX`     |
 | Help                | `help` |
 | Exit                | `exit` |
