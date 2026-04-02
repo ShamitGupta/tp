@@ -45,11 +45,9 @@ public class DeleteCustomerCommandTest {
     }
 
     @Test
-    void execute_nonNumericIndex_throwsNumberFormatException() {
+    void execute_nonNumericIndex_handlesExceptionGracefully() {
         DeleteCustomerCommand command = new DeleteCustomerCommand("abc");
-
-        assertThrows(NumberFormatException.class,
-                () -> command.execute(inventory, ui, customerList));
+        assertDoesNotThrow(() -> command.execute(inventory, ui, customerList));
     }
 
 
