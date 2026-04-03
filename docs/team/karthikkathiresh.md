@@ -66,8 +66,8 @@ fast typists who prefer a CLI workflow over GUI applications.
 ### Project Management & Team-Based Tasks
 *(Document your roles in managing the repository and ensuring smooth team operations for CS2113.)*
 
-* Managed releases `[vX.X]` - `[vY.Y]` on GitHub.
-* Maintained the issue tracker by creating and assigning tasks for the `[vX.X]` milestone.
+* Managed releases `[v1.0]` - `[v2.0]` on GitHub.
+* Maintained the issue tracker by creating and assigning tasks for the `[v1.0]` milestone.
 * *Mention any other administrative tasks, like setting up the repository or managing project boards.*
 
 ### Community & Tooling
