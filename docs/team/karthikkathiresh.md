@@ -24,11 +24,16 @@ fast typists who prefer a CLI workflow over GUI applications.
                                Implemented a skeleton of the `Parser` class to define the execution flow for different application commands. 
                                Configured the testing infrastructure by updating `runtest.bat` and `EXPECTED.TXT` for CI validation.*
 
-* **[Feature Name 2]** (v2.0):
-    * **What it does:** *Explain the functionality.*
-    * **Justification:** *Explain the rationale.*
-    * **Technical Highlights:** *Detail things like file I/O operations, error handling, assertions, or logging implementations.*
-* **Refactoring / Minor Enhancements:** *Mention smaller but crucial improvements, such as UI tweaks or optimizing existing code structures.*
+* **[Add Medication Feature]** (v1.0):
+    * **What it does:** *Allows users to log a new medication into the inventory. 
+                         It captures mandatory details (name, dosage, quantity, expiry date) while also supporting 
+                         a wide array of optional attributes such as dosage form, administration route, frequency, 
+                         max daily dose, and multiple specific warnings.*
+    * **Technical Highlights:** *Implemented `AddCommand` class which executes the overall feature. 
+                                 Updated the `Parser` class to handle variable-length inputs. 
+                                 The `execute` method throws a `PharmaTrackeException` to handle all possible input errors.*
+
+
 
 ### Contributions to Testing
 *(List the specific test classes you wrote and the edge cases you covered. This proves your commitment to software quality.)*
