@@ -31,405 +31,6 @@ import seedu.pharmatracker.command.ListCustomersCommand;
  */
 public class Parser {
 
-    public static final String FLAG_NAME = "/n";
-    public static final String FLAG_DOSAGE = "/d";
-    public static final String FLAG_QUANTITY = "/q";
-    public static final String FLAG_EXPIRY_DATE = "/e";
-    public static final String FLAG_TAG = "/t";
-    public static final String FLAG_DOSAGE_FORM = "/df";
-    public static final String FLAG_MANUFACTURER = "/mfr";
-    public static final String FLAG_DIRECTION = "/dir";
-    public static final String FLAG_FREQUENCY = "/freq";
-    public static final String FLAG_ROUTE = "/route";
-    public static final String FLAG_MAX_DOSAGE = "/max";
-    public static final String FLAG_WARNINGS = "/warn";
-
-    private static final String[] ALL_FLAGS = {
-        FLAG_NAME, FLAG_DOSAGE, FLAG_QUANTITY, FLAG_EXPIRY_DATE, FLAG_TAG,
-        FLAG_DOSAGE_FORM, FLAG_MANUFACTURER, FLAG_DIRECTION, FLAG_FREQUENCY,
-        FLAG_ROUTE, FLAG_MAX_DOSAGE, FLAG_WARNINGS
-    };
-
-    private static final String[] CUSTOMER_UPDATE_FLAGS = {"/n", "/p", "/a"};
-
-    /**
-     * Finds the index of the next flag appearing in the description string after a specified index.
-     * This is used to determine the end bound of a flag's associated value.
-     *
-     * @param description The raw string containing command arguments.
-     * @param afterIndex  The index to start searching from.
-     * @return The index of the next occurring flag, or the length of the string if no more flags exist.
-     * @throws PharmaTrackerException If the search index provided is invalid.
-     */
-    private static int findNextFlagIndex(String description, int afterIndex) throws PharmaTrackerException {
-        if (afterIndex < 0 || afterIndex > description.length()) {
-            throw new PharmaTrackerException("Error parsing command flags: Invalid search index.");
-        }
-
-        int earliest = description.length();
-        for (String flag : ALL_FLAGS) {
-            int idx = description.indexOf(flag, afterIndex);
-            if (idx != -1 && idx < earliest) {
-                earliest = idx;
-            }
-        }
-        return earliest;
-    }
-
-    /**
-     * Extracts the string value associated with a generic optional flag.
-     *
-     * @param description The raw string containing command arguments.
-     * @param flag        The specific flag to search for.
-     * @return The extracted string value, or an empty string if the flag is not present.
-     * @throws PharmaTrackerException If the flag is present but has no accompanying value.
-     */
-    private static String extractFlag(String description, String flag) throws PharmaTrackerException {
-        int flagIndex = description.indexOf(flag);
-        if (flagIndex == -1) {
-            return "";
-        }
-
-        int valueStart = flagIndex + flag.length();
-        if (valueStart >= description.length()) {
-            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
-        }
-
-        int valueEnd = findNextFlagIndex(description, valueStart);
-        String extractedValue = description.substring(valueStart, valueEnd).trim();
-
-        if (extractedValue.isEmpty()) {
-            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
-        }
-
-        return extractedValue;
-    }
-
-    /**
-     * Extracts the mandatory medication name from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted medication name.
-     * @throws PharmaTrackerException If the format is invalid, missing flags, or if the name is empty.
-     */
-    public static String extractName(String description) throws PharmaTrackerException {
-        int nameIndex = description.indexOf(FLAG_NAME);
-        int dosageIndex = description.indexOf(FLAG_DOSAGE);
-
-        if (nameIndex == -1 || dosageIndex == -1 || nameIndex >= dosageIndex) {
-            throw new PharmaTrackerException("Invalid format! Please ensure you include '/n' followed by '/d'.");
-        }
-
-        String name = description.substring(nameIndex + 2, dosageIndex).trim();
-        if (name.isEmpty()) {
-            throw new PharmaTrackerException("Medication name cannot be empty!");
-        }
-
-        return name;
-    }
-
-    /**
-     * Extracts the mandatory medication storage from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted medication dosage.
-     * @throws PharmaTrackerException If the format is invalid, missing flags, or if the dosage is empty.
-     */
-    public static String extractDosage(String description) throws PharmaTrackerException {
-        int dosageIndex = description.indexOf(FLAG_DOSAGE);
-        int quantityIndex = description.indexOf(FLAG_QUANTITY);
-
-        if (dosageIndex == -1 || quantityIndex == -1 || dosageIndex > quantityIndex) {
-            throw new PharmaTrackerException("Invalid format! Please ensure you include '/d' followed by '/q'.");
-        }
-
-        String dosage = description.substring(dosageIndex + 2, quantityIndex).trim();
-        if (dosage.isEmpty()) {
-            throw new PharmaTrackerException("Dosage cannot be empty!");
-        }
-
-        return dosage;
-    }
-
-    /**
-     * Extracts the mandatory medication quantity from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted medication quantity.
-     * @throws PharmaTrackerException If the format is invalid, missing flags, or if the quantity is empty.
-     */
-    public static int extractQuantity(String description) throws PharmaTrackerException {
-        int quantityIndex = description.indexOf(FLAG_QUANTITY);
-        int expiryIndex = description.indexOf(FLAG_EXPIRY_DATE);
-
-        if (quantityIndex == -1 || expiryIndex == -1 || quantityIndex > expiryIndex) {
-            throw new PharmaTrackerException("Invalid format! Please ensure you include '/q' followed by '/e'.");
-        }
-
-        String quantityString = description.substring(quantityIndex + 2, expiryIndex).trim();
-        if (quantityString.isEmpty()) {
-            throw new PharmaTrackerException("Quantity cannot be empty.");
-        }
-
-        try {
-            int quantity = Integer.parseInt(quantityString);
-            if (quantity < 0) {
-                throw new PharmaTrackerException("Quantity cannot be negative!");
-            }
-            return quantity;
-        } catch (NumberFormatException e) {
-            throw new PharmaTrackerException("Invalid quantity! Please enter a valid whole number.");
-        }
-    }
-
-    /**
-     * Extracts the mandatory medication expiry date from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted medication expiry date.
-     * @throws PharmaTrackerException If the format is invalid, missing flags, or if the expiry date is empty.
-     */
-    public static String extractExpiryDate(String description) throws PharmaTrackerException {
-        int expiryIndex = description.indexOf(FLAG_EXPIRY_DATE);
-        if (expiryIndex == -1) {
-            throw new PharmaTrackerException("Invalid format! Please ensure you include the '/e' flag.");
-        }
-
-        int valueStart = expiryIndex + 2;
-        int valueEnd = findNextFlagIndex(description, valueStart);
-
-        if (valueStart > description.length()) {
-            throw new PharmaTrackerException("Expiry date cannot be empty!");
-        }
-
-        String expiryDate = description.substring(valueStart, valueEnd);
-
-        if (expiryDate.isEmpty()) {
-            throw new PharmaTrackerException("Expiry date cannot be empty!");
-        }
-
-        return expiryDate;
-    }
-
-    /**
-     * Extracts all occurrences of the warning flag and compiles them into a list.
-     *
-     * @param description The raw string containing command arguments.
-     * @return An {@code ArrayList} containing all extracted warning strings.
-     * @throws PharmaTrackerException If an error occurs during flag boundary detection.
-     */
-    private static ArrayList<String> extractWarnings(String description) throws PharmaTrackerException {
-        ArrayList<String> warnings = new ArrayList<>();
-        int searchFrom = 0;
-        while (true) {
-            int idx = description.indexOf(FLAG_WARNINGS, searchFrom);
-            if (idx == -1) {
-                break;
-            }
-            int valueStart = idx + FLAG_WARNINGS.length();
-            int valueEnd = findNextFlagIndex(description, valueStart);
-            String value = description.substring(valueStart, valueEnd).trim();
-            if (!value.isEmpty()) {
-                warnings.add(value);
-            }
-            searchFrom = valueStart;
-        }
-        return warnings;
-    }
-
-    /**
-     * Extracts the string value associated with an optional flag.
-     * Unlike extractFlag, this returns null if the flag is not present.
-     *
-     * @param description The raw string containing command arguments.
-     * @param flag        The specific flag to search for.
-     * @return The extracted string value, or null if the flag is not present.
-     * @throws PharmaTrackerException If the flag is present but has no accompanying value.
-     */
-    private static String extractOptionalFlag(String description, String flag) throws PharmaTrackerException {
-        int flagIndex = description.indexOf(flag);
-        if (flagIndex == -1) {
-            return null;
-        }
-
-        int valueStart = flagIndex + flag.length();
-        if (valueStart >= description.length()) {
-            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
-        }
-
-        int valueEnd = findNextFlagIndex(description, valueStart);
-        String extractedValue = description.substring(valueStart, valueEnd).trim();
-
-        if (extractedValue.isEmpty()) {
-            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
-        }
-
-        return extractedValue;
-    }
-
-    /**
-     * Extracts the optional medication quantity and converts it to an Integer object.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted Integer quantity, or null if the /q flag is not present.
-     * @throws PharmaTrackerException If the quantity format is invalid or negative.
-     */
-    private static Integer extractOptionalQuantity(String description) throws PharmaTrackerException {
-        String quantityString = extractOptionalFlag(description, FLAG_QUANTITY);
-        if (quantityString == null) {
-            return null;
-        }
-
-        try {
-            int quantity = Integer.parseInt(quantityString);
-            if (quantity < 0) {
-                throw new PharmaTrackerException("Quantity cannot be negative!");
-            }
-            return quantity;
-        } catch (NumberFormatException e) {
-            throw new PharmaTrackerException("Invalid quantity! Please enter a valid whole number.");
-        }
-    }
-
-    /**
-     * Extracts an optional customer flag for updatecustomer, returning {@code null} if absent.
-     * Uses customer-specific flag boundaries (/n, /p, /a).
-     *
-     * @param description The raw argument string (without the command word and index).
-     * @param flag        The flag to look for.
-     * @return The trimmed value if the flag is present, or {@code null} if the flag is absent.
-     * @throws PharmaTrackerException If the flag is present but has no accompanying value.
-     */
-    private static String extractCustomerUpdateFlag(String description, String flag)
-            throws PharmaTrackerException {
-        int flagIndex = description.indexOf(flag);
-        if (flagIndex == -1) {
-            return null;
-        }
-        int valueStart = flagIndex + flag.length();
-        if (valueStart >= description.length()) {
-            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
-        }
-        int valueEnd = description.length();
-        for (String f : CUSTOMER_UPDATE_FLAGS) {
-            int idx = description.indexOf(f, valueStart);
-            if (idx != -1 && idx < valueEnd) {
-                valueEnd = idx;
-            }
-        }
-        String extractedValue = description.substring(valueStart, valueEnd).trim();
-        if (extractedValue.isEmpty()) {
-            throw new PharmaTrackerException("Value for '" + flag + "' cannot be empty!");
-        }
-        return extractedValue;
-    }
-
-    /**
-     * Extracts the mandatory customer ID from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted customer ID.
-     * @throws PharmaTrackerException If the format is invalid, missing flags, or if the ID is empty.
-     */
-    private static String extractCustomerID(String description) throws PharmaTrackerException {
-        int idIndex = description.indexOf("/id");
-        int nameIndex = description.indexOf("/n");
-
-        if (idIndex == -1 || nameIndex == -1 || idIndex >= nameIndex) {
-            throw new PharmaTrackerException("Invalid format! Please ensure you include '/id' followed by '/n'.");
-        }
-
-        String id = description.substring(idIndex + 3, nameIndex).trim();
-
-        if (id.isEmpty()) {
-            throw new PharmaTrackerException("Customer ID cannot be empty!");
-
-        }
-        return id;
-    }
-
-    /**
-     * Extracts the mandatory customer name from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted customer name.
-     * @throws PharmaTrackerException PharmaTrackerException If the format is invalid.
-     *
-     */
-    public static String extractCustomerName(String description) throws PharmaTrackerException {
-        int nameIndex = description.indexOf("/n");
-        int phoneIndex = description.indexOf("/p");
-
-        if (nameIndex == -1 || phoneIndex == -1 || nameIndex >= phoneIndex) {
-            throw new PharmaTrackerException("Invalid format! Please ensure you include '/n' followed by '/p'.");
-        }
-
-        String name = description.substring(nameIndex + 2, phoneIndex).trim();
-
-        if (name.isEmpty()) {
-            throw new PharmaTrackerException("Customer name cannot be empty!");
-        }
-
-        return name;
-    }
-
-    /**
-     * Extracts the mandatory customer phone number from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted customer phone number.
-     * @throws PharmaTrackerException PharmaTrackerException If the format is invalid.
-     */
-    public static String extractCustomerPhone(String description) throws PharmaTrackerException {
-        int phoneIndex = description.indexOf("/p");
-        int addressIndex = description.indexOf("/addr");
-
-        if (phoneIndex == -1) {
-            throw new PharmaTrackerException("Invalid format! Please ensure you include the '/p' flag.");
-        }
-
-        int endIndex = (addressIndex == -1) ? description.length() : addressIndex;
-
-        if (phoneIndex >= endIndex) {
-            throw new PharmaTrackerException("Invalid format! '/p' must come before '/addr'");
-        }
-
-        String phone = description.substring(phoneIndex + 2, endIndex).trim();
-
-        if (phone.isEmpty()) {
-            throw new PharmaTrackerException("Customer phone cannot be empty!");
-        }
-
-        return phone;
-    }
-
-    /**
-     * Extracts the optional customer address from the user input.
-     *
-     * @param description The raw string containing command arguments.
-     * @return The extracted customer address, or an empty string if not provided.
-     * @throws PharmaTrackerException If the '/addr' flag is present but the address is empty.
-     */
-    public static String extractCustomerAddress(String description) throws PharmaTrackerException {
-        int addressIndex = description.indexOf("/addr");
-
-        if (addressIndex == -1) {
-            return "";
-        }
-
-        if (addressIndex + 5 >= description.length()) {
-            throw new PharmaTrackerException("Customer address cannot be empty if the /addr flag is used!");
-        }
-
-        String address = description.substring(addressIndex + 5).trim();
-
-        if (address.isEmpty()) {
-            throw new PharmaTrackerException("Customer address cannot be empty if the '/addr' flag is used!");
-        }
-
-        return description.substring(addressIndex + 5).trim();
-    }
-
     /**
      * Parses the full raw user input and returns the corresponding executable {@link Command}.
      *
@@ -444,18 +45,18 @@ public class Parser {
 
         switch (commandWord) {
         case AddCommand.COMMAND_WORD:
-            String name = extractName(description);
-            String dosage = extractDosage(description);
-            int quantity = extractQuantity(description);
-            String expiryDate = extractExpiryDate(description);
-            String tag = extractFlag(description, FLAG_TAG);
-            String dosageForm = extractFlag(description, FLAG_DOSAGE_FORM);
-            String manufacturer = extractFlag(description, FLAG_MANUFACTURER);
-            String directions = extractFlag(description, FLAG_DIRECTION);
-            String frequency = extractFlag(description, FLAG_FREQUENCY);
-            String route = extractFlag(description, FLAG_ROUTE);
-            String maxDailyDose = extractFlag(description, FLAG_MAX_DOSAGE);
-            ArrayList<String> warnings = extractWarnings(description);
+            String name = MedicationParserUtil.extractName(description);
+            String dosage = MedicationParserUtil.extractDosage(description);
+            int quantity = MedicationParserUtil.extractQuantity(description);
+            String expiryDate = MedicationParserUtil.extractExpiryDate(description);
+            String tag = ParserUtil.extractFlag(description, MedicationParserUtil.FLAG_TAG);
+            String dosageForm = ParserUtil.extractFlag(description, MedicationParserUtil.FLAG_DOSAGE_FORM);
+            String manufacturer = ParserUtil.extractFlag(description, MedicationParserUtil.FLAG_MANUFACTURER);
+            String directions = ParserUtil.extractFlag(description, MedicationParserUtil.FLAG_DIRECTION);
+            String frequency = ParserUtil.extractFlag(description, MedicationParserUtil.FLAG_FREQUENCY);
+            String route = ParserUtil.extractFlag(description, MedicationParserUtil.FLAG_ROUTE);
+            String maxDailyDose = ParserUtil.extractFlag(description, MedicationParserUtil.FLAG_MAX_DOSAGE);
+            ArrayList<String> warnings = MedicationParserUtil.extractWarnings(description);
             return new AddCommand(name, dosage, quantity, expiryDate, tag,
                     dosageForm, manufacturer, directions, frequency,
                     route, maxDailyDose, warnings);
@@ -556,19 +157,19 @@ public class Parser {
                 int updateIndex = Integer.parseInt(updateParts[0]);
                 String updateArgs = (updateParts.length > 1) ? updateParts[1] : "";
 
-                String uName = extractOptionalFlag(updateArgs, FLAG_NAME);
-                String uDosage = extractOptionalFlag(updateArgs, FLAG_DOSAGE);
-                Integer uQuantity = extractOptionalQuantity(updateArgs);
-                String uExpiry = extractOptionalFlag(updateArgs, FLAG_EXPIRY_DATE);
-                String uTag = extractOptionalFlag(updateArgs, FLAG_TAG);
-                String uDosageForm = extractOptionalFlag(updateArgs, FLAG_DOSAGE_FORM);
-                String uManufacturer = extractOptionalFlag(updateArgs, FLAG_MANUFACTURER);
-                String uDirections = extractOptionalFlag(updateArgs, FLAG_DIRECTION);
-                String uFrequency = extractOptionalFlag(updateArgs, FLAG_FREQUENCY);
-                String uRoute = extractOptionalFlag(updateArgs, FLAG_ROUTE);
-                String uMaxDailyDose = extractOptionalFlag(updateArgs, FLAG_MAX_DOSAGE);
+                String uName = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_NAME);
+                String uDosage = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_DOSAGE);
+                Integer uQuantity = MedicationParserUtil.extractOptionalQuantity(updateArgs);
+                String uExpiry = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_EXPIRY_DATE);
+                String uTag = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_TAG);
+                String uDosageForm = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_DOSAGE_FORM);
+                String uManufacturer = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_MANUFACTURER);
+                String uDirections = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_DIRECTION);
+                String uFrequency = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_FREQUENCY);
+                String uRoute = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_ROUTE);
+                String uMaxDailyDose = ParserUtil.extractOptionalFlag(updateArgs, MedicationParserUtil.FLAG_MAX_DOSAGE);
 
-                ArrayList<String> uWarnings = extractWarnings(updateArgs);
+                ArrayList<String> uWarnings = MedicationParserUtil.extractWarnings(updateArgs);
 
                 return new UpdateCommand(updateIndex, uName, uDosage, uQuantity, uExpiry, uTag,
                         uDosageForm, uManufacturer, uDirections, uFrequency, uRoute, uMaxDailyDose, uWarnings);
@@ -578,10 +179,10 @@ public class Parser {
             }
 
         case AddCustomerCommand.COMMAND_WORD:
-            String id = extractCustomerID(description);
-            String customerName = extractCustomerName(description);
-            String phone = extractCustomerPhone(description);
-            String address = extractCustomerAddress(description);
+            String id = CustomerParserUtil.extractCustomerID(description);
+            String customerName = CustomerParserUtil.extractCustomerName(description);
+            String phone = CustomerParserUtil.extractCustomerPhone(description);
+            String address = CustomerParserUtil.extractCustomerAddress(description);
             return new AddCustomerCommand(id, customerName, phone, address);
 
         case DeleteCustomerCommand.COMMAND_WORD:
@@ -596,9 +197,9 @@ public class Parser {
                 String[] ucParts = description.trim().split("\\s+", 2);
                 int ucIndex = Integer.parseInt(ucParts[0]);
                 String ucArgs = (ucParts.length > 1) ? ucParts[1] : "";
-                String ucName = extractCustomerUpdateFlag(ucArgs, "/n");
-                String ucPhone = extractCustomerUpdateFlag(ucArgs, "/p");
-                String ucAddress = extractCustomerUpdateFlag(ucArgs, "/a");
+                String ucName = CustomerParserUtil.extractCustomerUpdateFlag(ucArgs, "/n");
+                String ucPhone = CustomerParserUtil.extractCustomerUpdateFlag(ucArgs, "/p");
+                String ucAddress = CustomerParserUtil.extractCustomerUpdateFlag(ucArgs, "/a");
                 return new UpdateCustomerCommand(ucIndex, ucName, ucPhone, ucAddress);
             } catch (NumberFormatException e) {
                 throw new PharmaTrackerException(
