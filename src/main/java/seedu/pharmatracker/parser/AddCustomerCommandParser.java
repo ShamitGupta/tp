@@ -16,7 +16,7 @@ public class AddCustomerCommandParser implements Parser<AddCustomerCommand> {
      *
      * @param description The string containing the arguments provided by the user.
      * @return An AddCustomerCommand object instantiated with the extracted customer details.
-     * @throws PharmaTrackerException If the user input does not conform to the expected format, if required flags are missing, or if invalid values are provided.
+     * @throws PharmaTrackerException If the user input is invalid.
      */
     @Override
     public AddCustomerCommand parse(String description) throws PharmaTrackerException {

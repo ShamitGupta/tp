@@ -16,7 +16,7 @@ public interface Parser<T extends Command> {
      *
      * @param args The string containing the arguments provided by the user.
      * @return A command of type {@code T} ready for execution.
-     * @throws PharmaTrackerException If the user input does not conform to the expected format or if the arguments are invalid.
+     * @throws PharmaTrackerException If the user input is invalid.
      */
     T parse(String args) throws PharmaTrackerException;
 }
