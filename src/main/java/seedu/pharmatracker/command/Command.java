@@ -20,4 +20,13 @@ public abstract class Command {
      */
     public abstract void execute(Inventory inventory, Ui ui, CustomerList customerList);
 
+    /**
+     * Returns whether this command requires an authenticated session.
+     *
+     * @return True when login is required before execution.
+     */
+    public boolean requiresAuthentication() {
+        return true;
+    }
+
 }

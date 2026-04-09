@@ -52,4 +52,9 @@ public class ExitCommand extends Command {
     public void setShouldExit(boolean shouldExit) {
         this.shouldActuallyExit = shouldExit;
     }
+
+    @Override
+    public boolean requiresAuthentication() {
+        return false;
+    }
 }

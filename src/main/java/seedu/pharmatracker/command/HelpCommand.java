@@ -37,4 +37,9 @@ public class HelpCommand extends Command {
         
         logger.log(Level.INFO, "HelpCommand executed successfully");
     }
+
+    @Override
+    public boolean requiresAuthentication() {
+        return false;
+    }
 }
