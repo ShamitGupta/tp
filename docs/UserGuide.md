@@ -255,7 +255,14 @@ Edits the details of an existing medication in the inventory.
 * **Replacing lists (Warnings/Tags):** When updating fields that can have multiple values (like `/warn` or `/t`), the existing values are **completely replaced** by the new ones.
   * *Example:* If a medication has the warnings "Drowsiness" and "Take with food", typing `update 1 /warn Avoid alcohol` will remove the first two warnings and leave *only* "Avoid alcohol".
 * **Clearing lists:** *(Optional depending on your implementation)* To clear all warnings or tags from a medication without adding new ones, type the parameter without any text after it (e.g., `update 1 /warn`).
-* **Duplicates:** The system will reject the update if changing the name and dosage would cause it to be identical to another medication already in the inventory.
+
+**Example Output:**
+
+```
+____________________________________________________________
+Medication updated: Zyrtec | Expiry updated to 31/12/2027
+____________________________________________________________
+```
 
 --- 
 
