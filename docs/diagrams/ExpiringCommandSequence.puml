@@ -3,8 +3,8 @@ skinparam ArrowFontStyle plain
 
 actor User
 participant ":PharmaTracker" as PharmaTracker
+participant ":PharmaTrackerParser" as PharmaTrackerParser
 participant ":Ui" as Ui
-participant "<<class>>\nParser" as Parser
 participant "c:ExpiringCommand" as ExpiringCommand
 participant "inv:Inventory" as Inventory
 participant "med:Medication" as Medication
@@ -12,35 +12,30 @@ participant "med:Medication" as Medication
 User -> PharmaTracker : "expiring /days 14"
 activate PharmaTracker
 
-PharmaTracker -> Ui : readCommand()
-activate Ui
-Ui --> PharmaTracker : fullCommand
-deactivate Ui
-
-PharmaTracker -> Parser : parse(fullCommand)
-activate Parser
+PharmaTracker -> PharmaTrackerParser : parseCommand("expiring /days 14")
+activate PharmaTrackerParser
 
 alt no /days argument provided
     create ExpiringCommand
-    Parser -> ExpiringCommand : new ExpiringCommand()
+    PharmaTrackerParser -> ExpiringCommand : new ExpiringCommand()
     activate ExpiringCommand
-    ExpiringCommand --> Parser : c
+    ExpiringCommand --> PharmaTrackerParser : c
     deactivate ExpiringCommand
 else valid /days argument provided
-    Parser -> Parser : parseInt(daysStr)
-    activate Parser
-    Parser --> Parser : days
-    deactivate Parser
+    PharmaTrackerParser -> PharmaTrackerParser : parseInt(daysStr)
+    activate PharmaTrackerParser
+    PharmaTrackerParser --> PharmaTrackerParser : days
+    deactivate PharmaTrackerParser
 
     create ExpiringCommand
-    Parser -> ExpiringCommand : new ExpiringCommand(days)
+    PharmaTrackerParser -> ExpiringCommand : new ExpiringCommand(days)
     activate ExpiringCommand
-    ExpiringCommand --> Parser : c
+    ExpiringCommand --> PharmaTrackerParser : c
     deactivate ExpiringCommand
 end
 
-Parser --> PharmaTracker : c
-deactivate Parser
+PharmaTrackerParser --> PharmaTracker : c
+deactivate PharmaTrackerParser
 
 PharmaTracker -> ExpiringCommand : execute(inv, ui, customerList)
 activate ExpiringCommand
@@ -82,7 +77,7 @@ deactivate Ui
 
 ExpiringCommand --> PharmaTracker
 deactivate ExpiringCommand
-ExpiringCommand -[hidden]-> Parser
+ExpiringCommand -[hidden]-> PharmaTrackerParser
 destroy ExpiringCommand
 
 deactivate PharmaTracker
