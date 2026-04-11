@@ -516,17 +516,19 @@ ____________________________________________________________
 ### List all customers: `list-customers`
 
 Displays a numbered list of all customers currently registered in the system,
-showing their customer ID, name, and phone number.
+showing their customer ID, name, and phone number. If available, each entry
+also includes the customer's address and recorded allergies.
 
 **Format**: `list-customers`
 
-**Example — 3 customers registered:**
+**Example — 4 customers registered:**
 
 ```
 PharmaTracker Customers:
 1. [C001] John Tan | Phone: 99887766
-2. [C002] Mary Tan | Phone: 87654321
-3. [C003] David Ng | Phone: 93456789
+2. [C002] Mary Tan | Phone: 87654321 | Address: 10 Orchard Road
+3. [C003] David Ng | Phone: 93456789 | Allergies: penicillin
+3. [C003] El Primo | Phone: 64363459 | Address: 10 Orchard Road | Allergies: penicillin
 ------------------------------------------------------
 Total Customers: 3.
 ```
