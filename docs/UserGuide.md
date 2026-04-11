@@ -572,7 +572,7 @@ Displays the full details of a specific customer, including their ID, name, phon
 
 Format: `view-customer INDEX`
 
-- `INDEX` must be a positive integer corresponding to a customer shown in `listcustomers`.
+- `INDEX` must be a positive integer corresponding to a customer shown in `list-customers`.
 - If the customer has no dispensing history, a message indicating this is shown instead.
 
 Example: `view-customer 1`
