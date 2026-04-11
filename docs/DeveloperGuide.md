@@ -1027,9 +1027,11 @@ Fast, lightweight medication tracking without needing a database or internet con
 
 ### Launching the application
 
-1. Open a terminal in the project root directory.
-2. Run `./gradlew run` (Linux/macOS) or `.\gradlew run` (Windows).
-3. The welcome banner and `Enter command:` prompt should appear.
+1. Ensure Java 17 or above is installed on your computer.
+2. Download the latest `pharmatracker.jar` from the releases page.
+3. Open a terminal in the folder containing the jar file.
+4. Run `java -jar pharmatracker.jar` to start the application.
+5. The welcome banner and `Enter command:` prompt should appear.
 
 ### Adding a medication
 
