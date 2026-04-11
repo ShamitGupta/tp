@@ -304,7 +304,7 @@ The `list` feature provides a summary view of the entire inventory, allowing use
 5.  `ListCommand.execute()` retrieves the list of all medications from `Inventory.getMedications()`.
 6.  The command iterates through the collection. For each `Medication` object:
     * It retrieves the name, dosage, quantity, and expiry date.
-    * It checks the stock level; if the quantity is $\leq 10$, a `[LOW STOCK]` indicator is appended to the output string.
+    * It checks the stock level; if the quantity is $< 20$, a `[LOW STOCK]` indicator is appended to the output string (matching the default threshold for the `lowstock` command).
 7.  The formatted list is passed to the `Ui` component for display, followed by a summary count of total medications.
 
 #### Design Considerations
@@ -313,13 +313,13 @@ The `list` feature provides a summary view of the entire inventory, allowing use
 |:--- |:--- |:--- |
 | **Information Density** | High-level summary | Keeps the output clean and scannable; users can use `view` for full details. |
 | **Index Alignment** | 1-based numbering | Ensures the index shown to the user matches the input requirements for index-based commands. |
-| **Stock Warning** | Hardcoded threshold ($\leq 10$) | Provides immediate visual priority for items needing replenishment without requiring a separate query. |
+| **Stock Warning** | Consistent threshold (20) | Provides immediate visual priority for items needing replenishment, matching the default threshold for the `lowstock` command to ensure consistency across features. |
 
 ### Manual Testing: List Feature
 
 1.  **Test case:** `list` (with items in inventory)
 2.  **Expected:** A numbered list appears. Each line follows the format `NAME | DOSAGE | Qty: QUANTITY | Expiry: DATE`.
-3.  **Low stock check:** Verify that any item with a quantity of 10 or less displays the `[LOW STOCK]` tag.
+3.  **Low stock check:** Verify that any item with a quantity less than 20 displays the `[LOW STOCK]` tag.
 4.  **Summary check:** Ensure the "Total Medications" count at the bottom matches the number of items listed.
 
 ![Sequence diagram showing the execution flow of the List Command](images/ListCommandSequence.png)
@@ -1042,7 +1042,7 @@ Fast, lightweight medication tracking without needing a database or internet con
 ### Listing medications
 
 1. Enter: `list`
-2. **Expected:** All medications displayed with index, name, dosage, quantity, expiry, and tag. Items with quantity ≤ 10 show `[LOW STOCK]`.
+2. **Expected:** All medications displayed with index, name, dosage, quantity, expiry, and tag. Items with quantity < 20 show `[LOW STOCK]`.
 
 ### Finding a medication
 

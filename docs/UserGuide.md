@@ -138,7 +138,7 @@ Displays a high-level summary of all medications currently stored in the system.
 
 * Shows a numbered list of all medication records currently in the inventory.
 * Each entry displays the name, dosage, current quantity, and expiry date.
-* Medications with a quantity of **10 or less** are automatically flagged with `[LOW STOCK]`.
+* Medications with a quantity of **less than 20** are automatically flagged with `[LOW STOCK]` (consistent with the default threshold for the `lowstock` command).
 * This list provides the **INDEX** values required for other commands such as `delete`, `view`, and `dispense`.
 
 **Example**:

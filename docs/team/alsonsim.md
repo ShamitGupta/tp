@@ -34,7 +34,7 @@ Extended the existing `dispense` command with an optional `/c CUSTOMER_INDEX` fl
 Implemented the core inventory overview command that provides a high-level summary of all medications.
 
 **Key Features:**
-- **Visual Cues**: Automatically flags items with a quantity of 10 or less as `[LOW STOCK]` to provide immediate visual priority for replenishment.
+- **Visual Cues**: Automatically flags items with a quantity of less than 20 as `[LOW STOCK]` to provide immediate visual priority for replenishment (consistent with the default threshold for the `lowstock` command).
 - **Reference Point**: Displays 1-based indices required for all other medication-based commands like `delete`, `view`, and `dispense`.
 
 #### 3. List Customers (`listcustomers`)
@@ -192,7 +192,7 @@ The list feature provides a summary view of the entire inventory, allowing users
 
 1. `Parser.parse()` identifies the list command word and returns a `ListCommand` object.
 2. `ListCommand.execute()` retrieves all medications from the `Inventory`.
-3. The command iterates through the collection, appending `[LOW STOCK]` if quantity ≤ 10.
+3. The command iterates through the collection, appending `[LOW STOCK]` if quantity < 20.
 4. The formatted list is passed to the `Ui` for display, followed by a total medication count.
 
 #### Design Considerations
@@ -215,7 +215,7 @@ Displays a high-level summary of all medications currently stored in the system.
 
 **Features:**
 - Displays a numbered list including name, dosage, current quantity, and expiry date.
-- Items with quantity 10 or less are flagged `[LOW STOCK]`.
+- Items with quantity less than 20 are flagged `[LOW STOCK]`.
 
 **Example:**
 
