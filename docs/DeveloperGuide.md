@@ -1075,8 +1075,8 @@ Fast, lightweight medication tracking without needing a database or internet con
 
 1. Enter: `update-customer 1 /n Alice Tan /p 91234567`
 2. **Expected:** Confirmation showing updated customer details; address is unchanged.
-3. All fields: `update-customer 1 /n Alice Tan /p 91234567 /a 10 Orchard Road` → all three fields updated.
-4. No flags supplied: `update-customer 1` → error `No fields provided to update! Use /n, /p, or /a flags.`
+3. All fields: `update-customer 1 /n Alice Tan /p 91234567 /addr 10 Orchard Road` → all three fields updated.
+4. No flags supplied: `update-customer 1` → error `No fields provided to update! Use /n, /p, /addr, or /allergy flags.`
 5. Invalid index: `update-customer 99 /n Alice` → error message for out-of-bounds index.
 
 ### Checking low stock
