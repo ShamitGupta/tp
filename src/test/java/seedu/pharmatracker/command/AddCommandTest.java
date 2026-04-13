@@ -3,11 +3,13 @@ package seedu.pharmatracker.command;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 
 import seedu.pharmatracker.data.Inventory;
 import seedu.pharmatracker.data.Medication;
+import seedu.pharmatracker.exceptions.PharmaTrackerException;
 import seedu.pharmatracker.ui.Ui;
 import seedu.pharmatracker.customer.CustomerList;
 
@@ -25,7 +27,7 @@ public class AddCommandTest {
      * default to empty strings or empty lists.
      */
     @Test
-    public void execute_mandatoryFieldsOnly_addsToInventory() {
+    public void execute_mandatoryFieldsOnly_addsToInventory() throws PharmaTrackerException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
         CustomerList customerList = new CustomerList();
@@ -57,7 +59,7 @@ public class AddCommandTest {
      * are populated correctly.
      */
     @Test
-    public void execute_allFieldsPresent_addsSuccessfully() {
+    public void execute_allFieldsPresent_addsSuccessfully() throws PharmaTrackerException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
         CustomerList customerList = new CustomerList();
@@ -95,7 +97,7 @@ public class AddCommandTest {
      * multiple medications to the {@code Inventory} without overwriting previous entries.
      */
     @Test
-    public void execute_multipleAddCommands_appendsToInventory() {
+    public void execute_multipleAddCommands_appendsSuccessfully() throws PharmaTrackerException {
         Inventory inventory = getInventory();
         assertEquals(2, inventory.getMedications().size());
 
@@ -104,11 +106,51 @@ public class AddCommandTest {
         assertEquals("Tablet", secondMed.getDosageForm());
     }
 
+    @Test
+    public void execute_duplicateMedication_throwsPharmaTrackerException() throws PharmaTrackerException {
+        Inventory inventory = new Inventory();
+        Ui ui = new Ui();
+        CustomerList customerList = new CustomerList();
+        ArrayList<String> emptyWarnings = new ArrayList<>();
+
+        // Add the first medication
+        AddCommand firstCommand = new AddCommand(
+                "Paracetamol", "500mg", 100, "2026-12-31", "painkiller",
+                "", "", "", "", "", "", emptyWarnings
+        );
+        firstCommand.execute(inventory, ui, customerList);
+
+        // Attempt to add the exact same medication
+        AddCommand duplicateCommand = new AddCommand(
+                "Paracetamol", "500mg", 100, "2026-12-31", "painkiller",
+                "", "", "", "", "", "", emptyWarnings
+        );
+
+        // Expecting the PharmaTrackerException since you converted the print messages
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> duplicateCommand.execute(inventory, ui, customerList));
+
+        assertEquals("Failed to add medication." +
+                "\nUse the update command to update the medication as required.", thrown.getMessage());
+    }
+
+    @Test
+    public void execute_nullInventory_throwsAssertionError() {
+        Ui ui = new Ui();
+        CustomerList customerList = new CustomerList();
+        AddCommand command = new AddCommand(
+                "MedA", "10mg", 10, "2026-01-01", "tag1",
+                "", "", "", "", "", "", new ArrayList<>()
+        );
+
+        assertThrows(AssertionError.class, () -> command.execute(null, ui, customerList));
+    }
+
     /**
      * Helper method to initialize an {@code Inventory}l and execute two {@code AddCommand}s.
      * @return An {@code Inventory} populated with the two sample medications.
      */
-    private static Inventory getInventory() {
+    private static Inventory getInventory() throws PharmaTrackerException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
         CustomerList customerList = new CustomerList();

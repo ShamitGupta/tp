@@ -30,12 +30,12 @@ public class DeleteCustomerCommandTest {
     }
 
     @Test
-    void constructor_validDescription_success() {
+    void constructor_validDescription_createsCommandSuccessfully() {
         assertDoesNotThrow(() -> new DeleteCustomerCommand("1"));
     }
 
     @Test
-    void execute_validIndex_customerDeleted() throws PharmaTrackerException {
+    void execute_validIndex_deletesSuceessfully() throws PharmaTrackerException {
         assertEquals(1, customerList.getCustomerCount());
 
         DeleteCustomerCommand command = new DeleteCustomerCommand("1");
@@ -43,6 +43,26 @@ public class DeleteCustomerCommandTest {
         command.execute(inventory, ui, customerList);
 
         assertEquals(0, customerList.getCustomerCount());
+    }
+
+    @Test
+    void execute_indexOutOfBoundsLow_throwsPharmaTrackerException() {
+        DeleteCustomerCommand command = new DeleteCustomerCommand("0");
+
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> command.execute(inventory, ui, customerList));
+
+        assertEquals("Invalid index. Please enter a number between 1 and 1.", thrown.getMessage());
+    }
+
+    @Test
+    void execute_indexOutOfBoundsHigh_throwsPharmaTrackerException() {
+        DeleteCustomerCommand command = new DeleteCustomerCommand("5");
+
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> command.execute(inventory, ui, customerList));
+
+        assertEquals("Invalid index. Please enter a number between 1 and 1.", thrown.getMessage());
     }
 
     @Test
@@ -62,6 +82,17 @@ public class DeleteCustomerCommandTest {
 
         assertThrows(AssertionError.class,
                 () -> command.execute(inventory, ui, null));
+    }
+
+    @Test
+    void execute_overflowIndex_throwsPharmaTrackerException() {
+        // 2147483648 is Max Integer + 1, triggering NumberFormatException but passing the regex digit check
+        DeleteCustomerCommand command = new DeleteCustomerCommand("2147483648");
+
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> command.execute(inventory, ui, customerList));
+
+        assertEquals("Invalid index. Please enter a number between 1 and 1.", thrown.getMessage());
     }
 
     @Test

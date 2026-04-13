@@ -2,6 +2,7 @@ package seedu.pharmatracker.command;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import seedu.pharmatracker.data.Inventory;
 import seedu.pharmatracker.data.Medication;
@@ -23,7 +24,7 @@ public class DeleteCommandTest {
      * medication is the one originally at the second position.
      */
     @Test
-    public void execute_validFirstIndex_deletesCorrectMedication() throws PharmaTrackerException {
+    public void execute_validFirstIndex_deletesSuccessfully() throws PharmaTrackerException {
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
         CustomerList customerList = new CustomerList();
@@ -49,7 +50,7 @@ public class DeleteCommandTest {
      * medication remains completely unaffected.
      */
     @Test
-    public void execute_validLastIndex_deletesCorrectMedication() throws PharmaTrackerException {
+    public void execute_validLastIndex_deletesSuccessfully() throws PharmaTrackerException {
 
         Inventory inventory = new Inventory();
         Ui ui = new Ui();
@@ -64,5 +65,86 @@ public class DeleteCommandTest {
 
         Medication remainingMed = inventory.getMedication(0);
         assertEquals("Paracetamol", remainingMed.getName());
+    }
+
+    @Test
+    public void execute_indexOutOfBoundsLow_throwsPharmaTrackerException() {
+        Inventory inventory = new Inventory();
+        Ui ui = new Ui();
+        CustomerList customerList = new CustomerList();
+        inventory.addMedication(new Medication("Paracetamol", "500mg", 100, "2026-12-31", "painkiller"));
+
+        DeleteCommand deleteCommand = new DeleteCommand("0");
+
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> deleteCommand.execute(inventory, ui, customerList));
+
+        assertEquals("Invalid index. Please enter a number between 1 and 1.", thrown.getMessage());
+    }
+
+    @Test
+    public void execute_indexOutOfBoundsHigh_throwsPharmaTrackerException() {
+        Inventory inventory = new Inventory();
+        Ui ui = new Ui();
+        CustomerList customerList = new CustomerList();
+        inventory.addMedication(new Medication("Paracetamol", "500mg", 100, "2026-12-31", "painkiller"));
+
+        DeleteCommand deleteCommand = new DeleteCommand("5");
+
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> deleteCommand.execute(inventory, ui, customerList));
+
+        assertEquals("Invalid index. Please enter a number between 1 and 1.", thrown.getMessage());
+    }
+
+    @Test
+    public void execute_nonNumericIndex_throwsPharmaTrackerException() {
+        Inventory inventory = new Inventory();
+        Ui ui = new Ui();
+        CustomerList customerList = new CustomerList();
+        inventory.addMedication(new Medication("Paracetamol", "500mg", 100, "2026-12-31", "painkiller"));
+
+        DeleteCommand deleteCommand = new DeleteCommand("abc");
+
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> deleteCommand.execute(inventory, ui, customerList));
+
+        assertEquals("Invalid format. Please provide a valid number for the index.", thrown.getMessage());
+    }
+
+    @Test
+    public void execute_overflowIndex_throwsPharmaTrackerException() {
+        Inventory inventory = new Inventory();
+        Ui ui = new Ui();
+        CustomerList customerList = new CustomerList();
+        inventory.addMedication(new Medication("Paracetamol", "500mg", 100, "2026-12-31", "painkiller"));
+
+        // 2147483648 is Max Integer + 1, triggering NumberFormatException but passing the regex digit check
+        DeleteCommand deleteCommand = new DeleteCommand("2147483648");
+
+        PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
+                () -> deleteCommand.execute(inventory, ui, customerList));
+
+        assertEquals("Invalid index. Please enter a number between 1 and 1.", thrown.getMessage());
+    }
+
+    @Test
+    public void execute_nullInventory_throwsAssertionError() {
+        Ui ui = new Ui();
+        CustomerList customerList = new CustomerList();
+        DeleteCommand deleteCommand = new DeleteCommand("1");
+
+        assertThrows(AssertionError.class,
+                () -> deleteCommand.execute(null, ui, customerList));
+    }
+
+    @Test
+    public void execute_nullUi_throwsAssertionError() {
+        Inventory inventory = new Inventory();
+        CustomerList customerList = new CustomerList();
+        DeleteCommand deleteCommand = new DeleteCommand("1");
+
+        assertThrows(AssertionError.class,
+                () -> deleteCommand.execute(inventory, null, customerList));
     }
 }

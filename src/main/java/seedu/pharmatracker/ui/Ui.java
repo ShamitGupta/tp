@@ -103,8 +103,11 @@ public class Ui {
         int count = inventory.getMedicationCount();
         printToScreen(
                 DIVIDER,
-                MESSAGE_ADDED,
-                INDENT + med.toString(),
+                MESSAGE_ADDED
+        );
+
+        printMedicationDetails(med);
+        printToScreen(
                 "You now have " + count + " medications in your inventory!",
                 DIVIDER
         );
@@ -121,8 +124,11 @@ public class Ui {
         int count = inventory.getMedicationCount();
         printToScreen(
                 DIVIDER,
-                MESSAGE_DELETED,
-                INDENT + med.toString(),
+                MESSAGE_DELETED
+        );
+
+        printMedicationDetails(med);
+        printToScreen(
                 "You now have " + count + " medications in your inventory!",
                 DIVIDER
         );

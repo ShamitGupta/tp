@@ -52,8 +52,8 @@ public class DeleteCommand extends Command {
         try {
             int index = Integer.parseInt(description);
             if (index < 1 || index > inventory.getMedicationCount()) {
-                System.out.println("Invalid index. Please enter a number between 1 and " + medicationCount + ".");
-                return;
+                throw new PharmaTrackerException("Invalid index. Please enter a number between 1 and "
+                        + medicationCount + ".");
             }
             int zeroBasedIndex = index - 1;
             Medication med = inventory.getMedication(zeroBasedIndex);
@@ -62,13 +62,14 @@ public class DeleteCommand extends Command {
             ui.printDeletedMessage(med, inventory);
 
             logger.log(Level.INFO, "Successfully executed DeleteCommand.");
+
         } catch (NumberFormatException e) {
             logger.log(Level.WARNING, "Failed to parse index in DeleteCommand: " + description);
             if (description.trim().matches("-?\\d+")) {
                 throw new PharmaTrackerException("Invalid index. Please enter a number between 1 and " +
                         medicationCount + ".");
             } else {
-                throw new PharmaTrackerException("Invalid format. Please provide a valid number for the index. ");
+                throw new PharmaTrackerException("Invalid format. Please provide a valid number for the index.");
             }
         }
     }
