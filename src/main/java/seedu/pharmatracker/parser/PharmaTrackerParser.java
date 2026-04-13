@@ -160,7 +160,7 @@ public class PharmaTrackerParser {
         case UpdateCustomerCommand.COMMAND_WORD:
             if (description.isEmpty()) {
                 throw new PharmaTrackerException(
-                        "Invalid format! Use: updatecustomer INDEX [/n NAME] [/p PHONE] [/address ADDRESS]"
+                        "Invalid format! Use: updatecustomer INDEX [/n NAME] [/p PHONE] [/addr ADDRESS]"
                                 + "[/allergy ALLERGY1,ALLERGY2,...]");
             }
             try {
@@ -173,7 +173,7 @@ public class PharmaTrackerParser {
                     throw new PharmaTrackerException("Customer phone must be a valid Singapore number!\n"
                             + "Please ensure the number starts with either '8' or '9'");
                 }
-                String ucAddress = CustomerParserUtil.extractCustomerUpdateFlag(ucArgs, "/address");
+                String ucAddress = CustomerParserUtil.extractCustomerUpdateFlag(ucArgs, CustomerParserUtil.FLAG_ADDRESS);
                 java.util.ArrayList<String> ucAllergies = null;
                 if (ucArgs.contains(CustomerParserUtil.FLAG_ALLERGY)) {
                     ucAllergies = CustomerParserUtil.extractCustomerAllergies(ucArgs);

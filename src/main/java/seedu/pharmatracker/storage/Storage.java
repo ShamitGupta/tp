@@ -147,11 +147,11 @@ public class Storage {
                 seedu.pharmatracker.customer.Customer c = customerList.getCustomer(i);
                 String joinedHistory = String.join(HISTORY_SEPARATOR, c.getDispensingHistory());
                 String joinedAllergies = String.join(",", c.getAllergies());
-                fw.write(c.getCustomerId() + " | "
-                        + c.getName() + " | "
-                        + c.getPhone() + " | "
-                        + c.getAddress() + " | "
-                        + joinedHistory + " | "
+                fw.write(c.getCustomerId() + "\t"
+                        + c.getName() + "\t"
+                        + c.getPhone() + "\t"
+                        + c.getAddress() + "\t"
+                        + joinedHistory + "\t"
                         + joinedAllergies + "\n");
             }
             fw.close();
@@ -174,11 +174,11 @@ public class Storage {
         try {
             java.util.Scanner sc = new java.util.Scanner(file);
             while (sc.hasNextLine()) {
-                String line = sc.nextLine().trim();
+                String line = sc.nextLine().stripLeading();
                 if (line.isEmpty()) {
                     continue;
                 }
-                String[] parts = line.split(" \\| ");
+                String[] parts = line.split("\\t", -1);
                 if (parts.length >= 4) {
                     seedu.pharmatracker.customer.Customer c =
                             new seedu.pharmatracker.customer.Customer(parts[0], parts[1], parts[2], parts[3]);
