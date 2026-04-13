@@ -130,7 +130,8 @@ public class AddCommandTest {
         PharmaTrackerException thrown = assertThrows(PharmaTrackerException.class,
                 () -> duplicateCommand.execute(inventory, ui, customerList));
 
-        assertEquals("Failed to add medication.\nUse the update command to update the medication as required.", thrown.getMessage());
+        assertEquals("Failed to add medication." +
+                "\nUse the update command to update the medication as required.", thrown.getMessage());
     }
 
     @Test
