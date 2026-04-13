@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import seedu.pharmatracker.command.AcknowledgeAlertCommand;
 import seedu.pharmatracker.command.Command;
+import seedu.pharmatracker.command.DispenseCommand;
 import seedu.pharmatracker.command.FindCommand;
 import seedu.pharmatracker.command.LoginCommand;
 import seedu.pharmatracker.command.RegisterCommand;
+import seedu.pharmatracker.command.RestockCommand;
 import seedu.pharmatracker.command.SetThresholdCommand;
 import seedu.pharmatracker.exceptions.PharmaTrackerException;
 
@@ -58,12 +60,35 @@ public class PharmaTrackerParserTest {
     }
 
     @Test
+    public void parser_dispenseWithSlashQ_returnsDispenseCommand() throws PharmaTrackerException {
+        Command c = PharmaTrackerParser.parse("dispense 1 /q 10");
+        assertTrue(c instanceof DispenseCommand);
+    }
+
+    @Test
+    public void parser_restockWithSlashQ_returnsRestockCommand() throws PharmaTrackerException {
+        Command c = PharmaTrackerParser.parse("restock 1 /q 10");
+        assertTrue(c instanceof RestockCommand);
+    }
+
+    @Test
+    public void parser_dispenseWithLegacyQSlash_returnsNull() throws PharmaTrackerException {
+        Command c = PharmaTrackerParser.parse("dispense 1 q/10");
+    }
+    
+    @Test
     public void parser_restockOverflowQuantity_returnsNull() throws PharmaTrackerException {
         Command c = PharmaTrackerParser.parse("restock 1 /q 2222222222222222222");
         assertNull(c);
     }
 
     @Test
+    public void parser_restockWithLegacyQSlash_returnsNull() throws PharmaTrackerException {
+        Command c = PharmaTrackerParser.parse("restock 1 q/10");
+      
+    }
+      
+    @Test 
     public void parser_restockNonNumericQuantity_returnsNull() throws PharmaTrackerException {
         Command c = PharmaTrackerParser.parse("restock 1 /q abc");
     }
