@@ -1,6 +1,5 @@
 package seedu.pharmatracker.parser;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,9 +23,8 @@ public class ParserTest {
     }
 
     @Test
-    public void parser_findCommandNoKeyword_returnsNull() throws PharmaTrackerException {
-        Command c = PharmaTrackerParser.parse("find");
-        assertEquals(null, c);
+    public void parser_findCommandNoKeyword_throwsException() {
+        assertThrows(PharmaTrackerException.class, () -> PharmaTrackerParser.parse("find"));
     }
 
     @Test
