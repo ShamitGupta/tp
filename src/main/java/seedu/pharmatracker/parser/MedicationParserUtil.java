@@ -101,7 +101,7 @@ public class MedicationParserUtil {
 
         try {
             int quantity = Integer.parseInt(quantityString);
-            if (quantity <= 0) {
+            if (quantity < 0) {
                 throw new PharmaTrackerException("Quantity cannot be negative or zero!");
             }
             return quantity;
